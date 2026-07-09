@@ -1,34 +1,73 @@
 /* ============================================================
-   El Anotador · Design tokens
-   Identidad monocromática compartida por todo el ecosistema.
-   El tema se setea con  <html data-theme="onix|marfil">.
+   Vichen · Design tokens
+   Escena: amigos de noche alrededor de la mesa, pasándose el celu
+   para anotar. Oscuro y cálido por defecto (Noche), con un acento
+   ámbar. Tema claro (Día) disponible. Se setea en <html data-theme>.
    ============================================================ */
 
-:root[data-theme="marfil"]{
-  --paper:#F5F3ED; --ink:#17160F; --ink-soft:#6b675c;
-  --hair:rgba(23,22,15,.14); --ghost:rgba(23,22,15,.10);
-  --panel:rgba(23,22,15,.025); --sheen:rgba(23,22,15,.02);
-  --scrim:rgba(23,22,15,.35);
-}
-:root[data-theme="onix"]{
-  --paper:#0F0F11; --ink:#ECEAE3; --ink-soft:#8f8d84;
-  --hair:rgba(236,234,227,.16); --ghost:rgba(236,234,227,.09);
-  --panel:rgba(236,234,227,.035); --sheen:rgba(236,234,227,.02);
-  --scrim:rgba(0,0,0,.55);
-}
-/* Fallback si por lo que sea no hay data-theme: ónix. */
 :root{
-  --paper:#0F0F11; --ink:#ECEAE3; --ink-soft:#8f8d84;
-  --hair:rgba(236,234,227,.16); --ghost:rgba(236,234,227,.09);
-  --panel:rgba(236,234,227,.035); --sheen:rgba(236,234,227,.02);
-  --scrim:rgba(0,0,0,.55);
-
   /* Tipografía */
-  --serif:"Playfair Display", Georgia, serif;
-  --sans:"Jost", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --sans:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
-  /* Ritmo */
-  --r-sm:11px; --r-md:14px; --r-lg:20px; --r-pill:999px;
+  /* Radios */
+  --r-1:9px; --r-2:13px; --r-3:17px; --r-4:22px; --r-pill:999px;
+
+  /* Motion */
+  --ease:cubic-bezier(.22,1,.36,1);       /* ease-out-quint */
+  --ease-soft:cubic-bezier(.4,0,.2,1);
+  --dur-1:140ms; --dur-2:220ms; --dur-3:340ms;
+
+  /* Áreas seguras (notch) */
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
+
+  /* Acento ámbar (igual en ambos temas para las superficies llenas) */
+  --accent:#E7B24C;
+  --accent-strong:#F3C266;
+  --accent-ink:#1B1607;                    /* texto sobre ámbar */
+  --accent-tint:rgba(231,178,76,.15);
+  --accent-ring:rgba(231,178,76,.55);
+}
+
+/* ===================== NOCHE (default) ===================== */
+:root, :root[data-theme="noche"]{
+  color-scheme:dark;
+  --bg:#0F1115;
+  --surface:#161920;
+  --surface-2:#1E222B;
+  --surface-3:#262B35;
+  --hair:rgba(255,255,255,.09);
+  --hair-2:rgba(255,255,255,.16);
+  --ink:#F2F1EC;
+  --ink-soft:#A6AAB4;
+  --ink-faint:#6B7280;
+  --neg:#E0906E;                           /* números negativos */
+  --accent-text:#F0C475;                   /* ámbar como texto (legible en oscuro) */
+  --scrim:rgba(6,7,10,.62);
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 10px 30px -14px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.3);
+  --shadow-pop:0 20px 50px -18px rgba(0,0,0,.8);
+  --sheen:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+}
+
+/* ====================== DÍA ====================== */
+:root[data-theme="dia"]{
+  color-scheme:light;
+  --bg:#F1F1EF;
+  --surface:#FFFFFF;
+  --surface-2:#FAFAF8;
+  --surface-3:#F3F3F0;
+  --hair:rgba(24,26,32,.12);
+  --hair-2:rgba(24,26,32,.22);
+  --ink:#191B21;
+  --ink-soft:#585E6A;
+  --ink-faint:#8A909B;
+  --neg:#B4623C;
+  --accent-text:#9A6B12;                    /* ámbar oscurecido para texto en claro */
+  --scrim:rgba(24,26,32,.4);
+  --shadow-1:0 1px 2px rgba(24,26,32,.06);
+  --shadow-2:0 12px 28px -16px rgba(24,26,32,.28), 0 1px 3px rgba(24,26,32,.08);
+  --shadow-pop:0 24px 50px -20px rgba(24,26,32,.35);
+  --sheen:linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,0));
 }

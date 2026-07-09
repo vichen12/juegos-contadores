@@ -1,0 +1,19 @@
+{
+  "name": "Truco Vichen",
+  "short_name": "Truco",
+  "description": "Anotador de puntos de Truco: fósforos, malas y buenas, partido a 12–30. Funciona offline.",
+  "lang": "es-AR",
+  "start_url": "./",
+  "scope": "./",
+  "id": "/apps/truco/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F1115",
+  "theme_color": "#0F1115",
+  "categories": ["games"],
+  "icons": [
+    { "src": "../../assets/icons/truco-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "../../assets/icons/truco-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "../../assets/icons/truco-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

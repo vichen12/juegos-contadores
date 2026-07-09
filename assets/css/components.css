@@ -1,0 +1,148 @@
+/* ============================================================
+   Vichen · Componentes compartidos
+   Vocabulario único de UI para todas las apps: botones, icon-
+   buttons, segmented control, switches, inputs, steppers, panel.
+   ============================================================ */
+
+/* ---------- Marca ---------- */
+.brand-mark{display:inline-flex;align-items:center;gap:.5em;font-family:var(--sans);font-weight:700;
+  letter-spacing:.02em;color:var(--ink)}
+.brand-mark .spark{color:var(--accent);display:inline-flex}
+.wordmark{font-family:var(--sans);font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  font-size:11px;color:var(--ink-faint)}
+.wordmark b{color:var(--accent-text);font-weight:800}
+
+/* ---------- Botón ---------- */
+.btn{
+  --h:52px;
+  all:unset;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;gap:.55em;
+  height:var(--h);padding:0 22px;border-radius:var(--r-2);cursor:pointer;
+  font-weight:600;font-size:15px;letter-spacing:.01em;white-space:nowrap;
+  transition:transform var(--dur-1) var(--ease), background var(--dur-1), border-color var(--dur-1), box-shadow var(--dur-1), opacity var(--dur-1);
+}
+.btn svg{width:19px;height:19px}
+.btn:active{transform:scale(.975)}
+.btn[disabled],.btn:disabled{opacity:.4;pointer-events:none}
+.btn--block{display:flex;width:100%}
+.btn--lg{--h:58px;font-size:16px;border-radius:var(--r-3)}
+.btn--sm{--h:40px;padding:0 14px;font-size:13px}
+
+.btn--primary{background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow-1)}
+.btn--primary:hover{background:var(--accent-strong)}
+.btn--primary:active{box-shadow:none}
+
+.btn--soft{background:var(--surface-2);color:var(--ink);border:1px solid var(--hair)}
+.btn--soft:hover{background:var(--surface-3);border-color:var(--hair-2)}
+
+.btn--ghost{background:transparent;color:var(--ink);border:1px solid var(--hair)}
+.btn--ghost:hover{background:var(--surface-2);border-color:var(--hair-2)}
+
+.btn--quiet{background:transparent;color:var(--ink-soft);height:auto;padding:8px 12px;font-weight:500;font-size:13px}
+.btn--quiet:hover{color:var(--ink);background:var(--surface-2)}
+
+/* ---------- Icon button ---------- */
+.iconbtn{
+  --s:44px;
+  all:unset;box-sizing:border-box;width:var(--s);height:var(--s);border-radius:var(--r-pill);
+  display:inline-grid;place-items:center;cursor:pointer;
+  color:var(--ink);border:1px solid var(--hair);background:var(--surface);
+  box-shadow:var(--shadow-1);
+  transition:transform var(--dur-1) var(--ease), background var(--dur-1), border-color var(--dur-1), color var(--dur-1);
+}
+.iconbtn:hover{background:var(--surface-2);border-color:var(--hair-2)}
+.iconbtn:active{transform:scale(.9)}
+.iconbtn[disabled],.iconbtn:disabled{opacity:.32;pointer-events:none}
+.iconbtn svg{width:20px;height:20px}
+.iconbtn--sm{--s:38px}
+.iconbtn--sm svg{width:18px;height:18px}
+.iconbtn--bare{border-color:transparent;background:transparent;box-shadow:none}
+.iconbtn--bare:hover{background:var(--surface-2)}
+.iconbtn--accent{color:var(--accent-ink);background:var(--accent);border-color:transparent}
+.iconbtn--accent:hover{background:var(--accent-strong)}
+
+/* ---------- Segmented control ---------- */
+.seg{display:flex;gap:4px;padding:4px;border-radius:var(--r-2);background:var(--surface-2);border:1px solid var(--hair)}
+.seg-opt{
+  all:unset;box-sizing:border-box;flex:1;text-align:center;cursor:pointer;
+  padding:10px 8px;border-radius:calc(var(--r-2) - 4px);
+  font-weight:600;font-size:13.5px;color:var(--ink-soft);
+  display:inline-flex;align-items:center;justify-content:center;gap:.4em;
+  transition:background var(--dur-1), color var(--dur-1);
+}
+.seg-opt svg{width:16px;height:16px}
+.seg-opt:hover{color:var(--ink)}
+.seg-opt[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow-1)}
+.seg--accent .seg-opt[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
+
+/* ---------- Switch ---------- */
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 2px;border-bottom:1px solid var(--hair)}
+.switch-row:last-child{border-bottom:0}
+.switch-row .lbl{font-size:14.5px;color:var(--ink);display:flex;align-items:center;gap:.6em}
+.switch-row .lbl svg{width:17px;height:17px;color:var(--ink-soft)}
+.toggle{all:unset;box-sizing:border-box;width:46px;height:27px;border-radius:var(--r-pill);
+  background:var(--surface-3);border:1px solid var(--hair);position:relative;cursor:pointer;flex:0 0 auto;
+  transition:background var(--dur-1) var(--ease), border-color var(--dur-1)}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;
+  background:var(--ink-soft);transition:transform var(--dur-2) var(--ease), background var(--dur-1)}
+.toggle[aria-checked="true"]{background:var(--accent);border-color:transparent}
+.toggle[aria-checked="true"]::after{transform:translateX(19px);background:var(--accent-ink)}
+
+/* ---------- Input ---------- */
+.field{position:relative;display:flex;align-items:center;gap:10px;
+  background:var(--surface-2);border:1px solid var(--hair);border-radius:var(--r-2);padding:0 14px;
+  transition:border-color var(--dur-1), box-shadow var(--dur-1)}
+.field:focus-within{border-color:var(--accent-ring);box-shadow:0 0 0 3px var(--accent-tint)}
+.field .lead{color:var(--ink-faint);display:inline-flex;flex:0 0 auto}
+.field .lead svg{width:18px;height:18px}
+.field input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--ink);
+  font-size:16px;font-weight:500;padding:13px 0}
+.field input::placeholder{color:var(--ink-faint)}
+
+/* ---------- Panel ---------- */
+.panel{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-3);box-shadow:var(--shadow-1)}
+
+/* ---------- Etiqueta de sección ---------- */
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+
+/* ---------- Modal / bottom sheet ---------- */
+.modal{position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;justify-content:center;
+  background:var(--scrim);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.modal.show{display:flex}
+.sheet{width:100%;max-width:470px;max-height:92dvh;overflow-y:auto;overscroll-behavior:contain;
+  background:var(--surface);border:1px solid var(--hair);
+  border-radius:var(--r-4) var(--r-4) 0 0;box-shadow:var(--shadow-pop);
+  padding:10px 22px calc(26px + var(--safe-bottom));
+  animation:sheetrise var(--dur-3) var(--ease) both}
+@media(min-width:520px){.modal{align-items:center;padding:20px}.sheet{border-radius:var(--r-4)}}
+@keyframes sheetrise{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
+.sheet .grab{width:38px;height:4px;border-radius:99px;background:var(--hair-2);margin:2px auto 14px}
+.sheet-title{font-family:var(--serif);font-weight:600;font-size:22px;text-align:center;color:var(--ink)}
+.sheet-sub{text-align:center;color:var(--ink-faint);font-size:12.5px;margin-top:3px}
+.sheet .group{margin-top:22px}
+.sheet .group > .eyebrow{display:block;margin-bottom:11px}
+
+/* ---------- Selector de íconos ---------- */
+.icons-pick{display:flex;flex-wrap:wrap;gap:8px}
+.ipick{all:unset;box-sizing:border-box;width:44px;height:44px;border-radius:var(--r-2);cursor:pointer;
+  display:grid;place-items:center;color:var(--ink-soft);border:1px solid var(--hair);background:var(--surface-2);
+  transition:transform var(--dur-1) var(--ease),background var(--dur-1),color var(--dur-1),border-color var(--dur-1)}
+.ipick:hover{color:var(--ink);background:var(--surface-3)}
+.ipick:active{transform:scale(.9)}
+.ipick svg{width:21px;height:21px}
+.ipick[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+
+/* ---------- Contador con animación al cambiar ---------- */
+@keyframes bump{0%{transform:scale(1)}28%{transform:scale(1.14)}100%{transform:scale(1)}}
+.bump{animation:bump var(--dur-3) var(--ease)}
+
+/* ---------- Toast (ayuda instalar iOS) ---------- */
+@keyframes vtoast{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%)}}
+
+/* ---------- Stepper compacto (− valor +) ---------- */
+.stepper-mini{display:inline-flex;align-items:center;gap:6px}
+.step-btn{all:unset;box-sizing:border-box;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;
+  cursor:pointer;color:var(--ink);border:1px solid var(--hair);background:var(--surface-2);
+  transition:transform var(--dur-1) var(--ease), background var(--dur-1), border-color var(--dur-1)}
+.step-btn:hover{background:var(--surface-3);border-color:var(--hair-2)}
+.step-btn:active{transform:scale(.88)}
+.step-btn svg{width:17px;height:17px}

@@ -14,10 +14,10 @@
 (function (global) {
   "use strict";
 
-  const ROOT = "anotador"; // prefijo global de todas las claves
+  const ROOT = "vichen"; // prefijo global de todas las claves
   const hasLS = (() => {
     try {
-      const k = "__anotador_probe__";
+      const k = "__vichen_probe__";
       localStorage.setItem(k, "1");
       localStorage.removeItem(k);
       return true;

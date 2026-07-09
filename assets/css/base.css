@@ -1,26 +1,34 @@
 /* ============================================================
-   El Anotador · Base / reset compartido
+   Vichen · Base / reset
    ============================================================ */
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*::selection{background:var(--accent-tint)}
 html,body{margin:0}
-html{background:var(--paper)}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
 body{
   font-family:var(--sans);
+  font-size:16px;
+  line-height:1.5;
   color:var(--ink);
-  background:var(--paper);
+  background:var(--bg);
   min-height:100dvh;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
-  transition:background .4s, color .4s;
+  font-feature-settings:"cv02","cv03","cv04","cv11";  /* Inter afinada */
 }
 img,svg{display:block;max-width:100%}
-button{font-family:inherit}
-:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+svg{stroke-linecap:round;stroke-linejoin:round}
+button{font-family:inherit;font-size:inherit;color:inherit}
+input,select,textarea{font-family:inherit}
+h1,h2,h3{font-family:var(--serif);font-optical-sizing:auto;text-wrap:balance;margin:0}
 
-/* Fuera de la app hay poco texto seleccionable; las apps de juego
-   fijan user-select:none por su cuenta cuando lo necesitan. */
+/* Foco visible y consistente */
+:focus-visible{outline:2px solid var(--accent-ring);outline-offset:2px;border-radius:6px}
+
+/* Números tabulares para contadores/tablas */
+.tnum{font-variant-numeric:tabular-nums lining-nums}
 
 @media (prefers-reduced-motion:reduce){
-  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+  *,*::before,*::after{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important}
 }

@@ -1,7 +1,7 @@
 {
-  "name": "El Anotador",
-  "short_name": "El Anotador",
-  "description": "Ecosistema de anotadores de juegos: Truco, Podrido y más. Funciona offline, tus datos quedan en el celular.",
+  "name": "Vichen · Anotador de juegos",
+  "short_name": "Vichen",
+  "description": "Anotadores de juegos de cartas: Truco, Magic y más. Funciona offline, tus datos quedan en el celular.",
   "lang": "es-AR",
   "dir": "ltr",
   "start_url": "./",
@@ -9,28 +9,16 @@
   "id": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0F0F11",
-  "theme_color": "#0F0F11",
+  "background_color": "#0F1115",
+  "theme_color": "#0F1115",
   "categories": ["games", "utilities"],
   "icons": [
-    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "assets/icons/vichen-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/vichen-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/vichen-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    {
-      "name": "Truco",
-      "short_name": "Truco",
-      "description": "Anotador de puntos de Truco",
-      "url": "apps/truco/",
-      "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Podrido",
-      "short_name": "Podrido",
-      "description": "Contador por rondas del Podrido",
-      "url": "apps/podrido/",
-      "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }]
-    }
+    { "name": "Truco", "short_name": "Truco", "url": "apps/truco/", "icons": [{ "src": "assets/icons/truco-192.png", "sizes": "192x192" }] },
+    { "name": "Magic", "short_name": "Magic", "url": "apps/magic/", "icons": [{ "src": "assets/icons/magic-192.png", "sizes": "192x192" }] }
   ]
 }

@@ -7,7 +7,7 @@
      · Fuentes de Google: cache-first (una vez bajadas, offline).
    Al cambiar archivos, subí VERSION para forzar actualización.
    ============================================================ */
-const VERSION = "anotador-v1.0.0";
+const VERSION = "vichen-v2.0.0";
 const CORE = VERSION + "-core";
 const RUNTIME = VERSION + "-rt";
 
@@ -18,21 +18,34 @@ const PRECACHE = [
   "./manifest.webmanifest",
   "./assets/css/tokens.css",
   "./assets/css/base.css",
+  "./assets/css/components.css",
   "./assets/css/shell.css",
   "./assets/js/store.js",
   "./assets/js/registry.js",
+  "./assets/js/icons.js",
   "./assets/js/theme.js",
   "./assets/js/shell.js",
   "./assets/js/pwa.js",
   "./assets/icons/favicon.png",
   "./assets/icons/apple-touch-icon.png",
-  "./assets/icons/icon-192.png",
-  "./assets/icons/icon-512.png",
-  "./assets/icons/icon-maskable-512.png",
+  "./assets/icons/vichen-192.png",
+  "./assets/icons/vichen-512.png",
+  "./assets/icons/vichen-maskable-512.png",
+  "./assets/icons/vichen-apple.png",
+  "./assets/icons/truco-192.png",
+  "./assets/icons/truco-512.png",
+  "./assets/icons/truco-maskable-512.png",
+  "./assets/icons/truco-apple.png",
+  "./assets/icons/magic-192.png",
+  "./assets/icons/magic-512.png",
+  "./assets/icons/magic-maskable-512.png",
+  "./assets/icons/magic-apple.png",
   "./apps/truco/",
   "./apps/truco/index.html",
-  "./apps/podrido/",
-  "./apps/podrido/index.html",
+  "./apps/truco/manifest.webmanifest",
+  "./apps/magic/",
+  "./apps/magic/index.html",
+  "./apps/magic/manifest.webmanifest",
 ];
 
 self.addEventListener("install", (event) => {

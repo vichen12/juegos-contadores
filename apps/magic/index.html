@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es-AR" data-theme="noche">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F1115">
+<title>Magic Vichen</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon.png">
+<link rel="apple-touch-icon" href="../../assets/icons/magic-apple.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Magic Vichen">
+<meta name="description" content="Magic de Vichen: contador por rondas de cartas que suben y bajan, puntaje por ronda, totales y ganador. Offline.">
+<script>(function(){try{var r=localStorage.getItem("vichen:theme:current");var t=r?JSON.parse(r).d:"noche";if(t!=="noche"&&t!=="dia")t="noche";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/components.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden;-webkit-user-select:none;user-select:none}
+.appbar{position:relative;padding:calc(15px + var(--safe-top)) 16px 4px;text-align:center}
+.appbar .kicker{font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:var(--ink-faint)}
+.appbar .kicker b{color:var(--accent-text)}
+.appbar h1{font-family:var(--serif);font-weight:600;font-size:clamp(26px,7vw,34px);letter-spacing:-.01em;margin-top:2px}
+.appbar .reset{position:absolute;top:calc(12px + var(--safe-top));right:14px}
+
+main{flex:1;width:100%;max-width:600px;margin:0 auto;padding:6px 18px calc(28px + var(--safe-bottom));display:flex;flex-direction:column}
+.view{display:none} .view.on{display:flex;flex-direction:column;flex:1}
+
+/* ---- Setup ---- */
+.group{margin-top:24px}
+.group .eyebrow{display:block;margin-bottom:11px}
+.hint{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-top:10px}
+.hint b{color:var(--accent-text);font-weight:600}
+
+.bigstep{display:flex;align-items:center;justify-content:space-between;gap:14px;
+  background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-3);padding:12px 14px;box-shadow:var(--shadow-1)}
+.bstep-btn{all:unset;box-sizing:border-box;width:54px;height:54px;border-radius:var(--r-pill);display:grid;place-items:center;cursor:pointer;
+  color:var(--ink);border:1px solid var(--hair);background:var(--surface-2);transition:transform var(--dur-1) var(--ease),background var(--dur-1),border-color var(--dur-1)}
+.bstep-btn:hover{background:var(--surface-3);border-color:var(--hair-2)} .bstep-btn:active{transform:scale(.9)}
+.bstep-btn:disabled{opacity:.3;pointer-events:none} .bstep-btn svg{width:22px;height:22px}
+.bigval{text-align:center;line-height:1}
+.bigval .n{font-family:var(--serif);font-weight:600;font-size:42px;color:var(--ink)}
+.bigval input.n{width:96px;background:transparent;border:0;border-bottom:1px solid var(--hair);border-radius:0;text-align:center;outline:none;-moz-appearance:textfield}
+.bigval input.n:focus{border-color:var(--accent-ring)}
+.bigval input.n::-webkit-outer-spin-button,.bigval input.n::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.bigval small{display:block;font-family:var(--sans);font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
+
+.names{display:flex;flex-direction:column;gap:9px}
+.nrow{display:flex;align-items:center;gap:11px}
+.nrow .badge{flex:0 0 34px;height:34px;border-radius:var(--r-1);display:grid;place-items:center;font-family:var(--serif);font-weight:600;
+  background:var(--accent-tint);color:var(--accent-text);font-size:15px}
+.nrow .field{flex:1}
+
+/* ---- Play: barra de ronda ---- */
+.roundbar{display:flex;align-items:center;gap:10px;margin:14px 0 2px}
+.roundbar .rc{flex:1;text-align:center}
+.roundbar .rc .r{font-family:var(--serif);font-weight:600;font-size:22px;color:var(--ink)}
+.roundbar .rc .cards{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin-top:4px}
+.roundbar .rc .cards b{color:var(--accent-text)}
+.dots{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:12px 0 2px}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--hair-2);transition:transform var(--dur-2) var(--ease),background var(--dur-1)}
+.dots i.done{background:var(--ink-soft)}
+.dots i.cur{background:var(--accent);transform:scale(1.4)}
+
+/* ---- Play: filas ---- */
+.prows{display:flex;flex-direction:column;margin-top:12px;border-top:1px solid var(--hair)}
+.prow{display:flex;align-items:center;gap:9px;padding:11px 2px;border-bottom:1px solid var(--hair)}
+.prow .pname{flex:1;min-width:0}
+.prow .pname .nm{font-family:var(--serif);font-weight:600;font-size:18px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:7px}
+.prow.lead .pname .nm .crown{color:var(--accent);display:inline-flex}
+.prow.lead .pname .nm .crown svg{width:16px;height:16px}
+.prow .pname .ac{font-size:11.5px;color:var(--ink-soft);margin-top:2px}
+.prow .pname .ac b{color:var(--ink);font-weight:700}
+.pstep{display:flex;align-items:center;gap:5px;flex:0 0 auto}
+.num{width:50px;height:44px;text-align:center;background:var(--surface-2);border:1px solid var(--hair);border-radius:var(--r-1);
+  color:var(--ink);font-family:var(--serif);font-weight:600;font-size:21px;outline:none;font-variant-numeric:lining-nums;-moz-appearance:textfield;transition:border-color var(--dur-1)}
+.num:focus{border-color:var(--accent-ring)}
+.num::-webkit-outer-spin-button,.num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.num.pos{color:var(--ink)} .num.neg{color:var(--neg)}
+.zero{font-size:12px;font-weight:700;color:var(--ink-soft)}
+
+.tabtoggle{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin:18px auto 0;
+  font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft)}
+.tabtoggle:hover{color:var(--ink)} .tabtoggle svg{width:15px;height:15px;transition:transform var(--dur-2) var(--ease)}
+.tabtoggle.open svg{transform:rotate(180deg)}
+.tablewrap{overflow-x:auto;margin-top:12px;border:1px solid var(--hair);border-radius:var(--r-2);background:var(--surface)}
+.tablewrap.hidden{display:none}
+table.grid{border-collapse:collapse;width:100%;font-size:13px}
+table.grid th,table.grid td{padding:9px 11px;text-align:center;border-bottom:1px solid var(--hair);white-space:nowrap}
+table.grid thead th{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+table.grid tbody th{font-family:var(--serif);color:var(--ink-soft);font-weight:600;text-align:left;position:sticky;left:0;background:var(--surface)}
+table.grid td{font-variant-numeric:tabular-nums;color:var(--ink)}
+table.grid tr.currow td,table.grid tr.currow th{background:var(--accent-tint)}
+table.grid tfoot td,table.grid tfoot th{font-family:var(--serif);font-weight:600;font-size:16px;color:var(--ink);border-top:1px solid var(--hair-2);border-bottom:0;background:var(--surface-2)}
+
+.footnote{text-align:center;font-size:11px;color:var(--ink-faint);margin-top:18px;line-height:1.7}
+.footnote b{color:var(--ink-soft)}
+
+/* ---- Ganador ---- */
+.win-icon{width:64px;height:64px;margin:6px auto 4px;border-radius:var(--r-3);display:grid;place-items:center;background:var(--accent-tint);color:var(--accent-text)}
+.win-icon svg{width:34px;height:34px}
+.stand{list-style:none;margin:10px 0 0;padding:0}
+.stand li{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--hair)}
+.stand li:last-child{border-bottom:0}
+.stand .pos{font-family:var(--serif);font-weight:600;font-size:15px;color:var(--ink-faint);width:26px}
+.stand li.first .pos{color:var(--accent-text)}
+.stand .who{flex:1;font-size:15px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stand li.first .who{font-weight:700}
+.stand .pts{font-family:var(--serif);font-weight:600;font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<header class="appbar">
+  <div class="kicker">MAGIC · <b>VICHEN</b></div>
+  <h1>Magic</h1>
+  <button class="iconbtn iconbtn--sm reset" id="btn-reset" aria-label="Nueva partida" hidden></button>
+</header>
+
+<main>
+  <!-- ===== SETUP ===== -->
+  <section class="view" id="v-setup">
+    <div class="group">
+      <span class="eyebrow">Jugadores</span>
+      <div class="bigstep">
+        <button class="bstep-btn" id="pl-minus" aria-label="Menos jugadores"></button>
+        <div class="bigval"><span class="n" id="pl-val">4</span><small>jugadores</small></div>
+        <button class="bstep-btn" id="pl-plus" aria-label="Más jugadores"></button>
+      </div>
+      <div class="names" id="names" style="margin-top:14px"></div>
+    </div>
+
+    <div class="group">
+      <span class="eyebrow">Modo de reparto</span>
+      <div class="seg" id="mode-opts" role="tablist">
+        <button class="seg-opt" data-v="up" role="tab">Solo sube</button>
+        <button class="seg-opt" data-v="updown" role="tab">Sube y baja</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <span class="eyebrow">Reparte hasta</span>
+      <div class="bigstep">
+        <button class="bstep-btn" id="pk-minus" aria-label="Menos cartas"></button>
+        <div class="bigval"><input class="n" id="pk-input" type="number" inputmode="numeric" min="1" max="30" value="7" aria-label="Cartas máximo por mano"><small>cartas por mano</small></div>
+        <button class="bstep-btn" id="pk-plus" aria-label="Más cartas"></button>
+      </div>
+      <p class="hint" id="rounds-hint"></p>
+    </div>
+
+    <div class="group">
+      <span class="eyebrow">Gana</span>
+      <div class="seg" id="win-opts" role="tablist">
+        <button class="seg-opt" data-v="max" role="tab">Más puntos</button>
+        <button class="seg-opt" data-v="min" role="tab">Menos puntos</button>
+      </div>
+    </div>
+
+    <button class="btn btn--primary btn--block btn--lg" id="btn-start" style="margin-top:26px">Empezar partida</button>
+  </section>
+
+  <!-- ===== PLAY ===== -->
+  <section class="view" id="v-play">
+    <div class="roundbar">
+      <button class="iconbtn" id="r-prev" aria-label="Ronda anterior"></button>
+      <div class="rc"><div class="r" id="r-num">Ronda 1</div><div class="cards" id="r-cards"></div></div>
+      <button class="iconbtn" id="r-next" aria-label="Ronda siguiente"></button>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div class="prows" id="prows"></div>
+    <button class="tabtoggle" id="tab-toggle">Ver tabla completa <span id="tab-caret"></span></button>
+    <div class="tablewrap hidden" id="tablewrap"></div>
+    <button class="btn btn--primary btn--block btn--lg" id="btn-next" style="margin-top:20px">Ronda siguiente</button>
+    <div class="footnote" id="footnote"></div>
+  </section>
+</main>
+
+<!-- Ganador -->
+<div class="modal" id="m-win" role="dialog" aria-modal="true" aria-label="Resultado">
+  <div class="sheet" style="text-align:center">
+    <div class="grab"></div>
+    <div class="win-icon" id="win-icon"></div>
+    <span class="eyebrow">Ganador</span>
+    <div class="sheet-title" id="win-name" style="margin-top:6px"></div>
+    <ol class="stand" id="win-stand" style="text-align:left"></ol>
+    <button class="btn btn--primary btn--block btn--lg" id="btn-again" style="margin-top:20px">Nueva partida</button>
+  </div>
+</div>
+
+<script src="../../assets/js/store.js"></script>
+<script src="../../assets/js/registry.js"></script>
+<script src="../../assets/js/icons.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/pwa.js"></script>
+<script src="../../assets/js/shell.js"></script>
+<script>
+(() => {
+"use strict";
+const db = Store.namespace("magic", 1);
+const $ = s => document.querySelector(s);
+const SVG=(n,s)=>Icons.svg(n,{size:s||20});
+
+const MINP=2, MAXP=8, MAXPEAK=30, DEFAULT_PTS=10;
+const setup = { players:4, names:["","","",""], peak:7, mode:"updown", win:"max" };
+let G = null;
+
+function buildCards(peak, mode){
+  const up=[]; for(let i=1;i<=peak;i++) up.push(i);
+  if(mode==="up") return up;
+  for(let i=peak-1;i>=1;i--) up.push(i);
+  return up;
+}
+function totalRounds(peak, mode){ return mode==="up" ? peak : Math.max(1, 2*peak-1); }
+
+/* -------- persistencia -------- */
+function saveGame(){ if(G) db.set("game", G); }
+function loadGame(){ return db.get("game", null); }
+function clearGame(){ db.remove("game"); G=null; }
+function ensureRound(r){ if(!G)return; const row=G.scores[r];
+  if(row && row.every(v=>v==null)){ for(let p=0;p<row.length;p++) row[p]=DEFAULT_PTS; saveGame(); } }
+
+/* ================= SETUP ================= */
+function renderNames(){
+  const box=$("#names"); box.innerHTML="";
+  for(let i=0;i<setup.players;i++){
+    const row=document.createElement("div"); row.className="nrow";
+    row.innerHTML='<span class="badge">'+(i+1)+'</span>'+
+      '<label class="field"><input type="text" maxlength="16" placeholder="Jugador '+(i+1)+'" value="'+(setup.names[i]||"").replace(/"/g,"&quot;")+'"></label>';
+    row.querySelector("input").addEventListener("input",e=>{ setup.names[i]=e.target.value; });
+    box.appendChild(row);
+  }
+}
+function renderSetup(){
+  $("#pl-val").textContent=setup.players;
+  $("#pl-minus").disabled=setup.players<=MINP; $("#pl-plus").disabled=setup.players>=MAXP;
+  if(setup.peak>MAXPEAK)setup.peak=MAXPEAK; if(setup.peak<1)setup.peak=1;
+  const inp=$("#pk-input"); if(document.activeElement!==inp) inp.value=setup.peak;
+  $("#pk-minus").disabled=setup.peak<=1; $("#pk-plus").disabled=setup.peak>=MAXPEAK;
+  segSel("#mode-opts",setup.mode); segSel("#win-opts",setup.win);
+  const tot=totalRounds(setup.peak,setup.mode);
+  $("#rounds-hint").innerHTML = setup.mode==="up"
+    ? 'Sube: reparte 1, 2, 3… hasta <b>'+setup.peak+'</b>. Son <b>'+tot+'</b> rondas.'
+    : 'Sube y baja: 1 … <b>'+setup.peak+'</b> … 1. Son <b>'+tot+'</b> rondas en total.';
+  renderNames();
+}
+function segSel(sel,val){ document.querySelectorAll(sel+" .seg-opt").forEach(o=>o.setAttribute("aria-selected",o.dataset.v==String(val))); }
+
+$("#pl-minus").addEventListener("click",()=>{ if(setup.players>MINP){setup.players--;setup.names=setup.names.slice(0,setup.players);renderSetup();} });
+$("#pl-plus").addEventListener("click",()=>{ if(setup.players<MAXP){setup.players++;setup.names.push("");renderSetup();} });
+$("#pk-minus").addEventListener("click",()=>{ if(setup.peak>1){setup.peak--;renderSetup();} });
+$("#pk-plus").addEventListener("click",()=>{ if(setup.peak<MAXPEAK){setup.peak++;renderSetup();} });
+$("#pk-input").addEventListener("input",e=>{ const v=parseInt(e.target.value,10); if(isNaN(v))return;
+  setup.peak=Math.max(1,Math.min(MAXPEAK,v));
+  $("#pk-minus").disabled=setup.peak<=1; $("#pk-plus").disabled=setup.peak>=MAXPEAK;
+  const tot=totalRounds(setup.peak,setup.mode);
+  $("#rounds-hint").innerHTML = setup.mode==="up"
+    ? 'Sube: reparte 1, 2, 3… hasta <b>'+setup.peak+'</b>. Son <b>'+tot+'</b> rondas.'
+    : 'Sube y baja: 1 … <b>'+setup.peak+'</b> … 1. Son <b>'+tot+'</b> rondas en total.'; });
+$("#pk-input").addEventListener("blur",renderSetup);
+$("#mode-opts").addEventListener("click",e=>{ const b=e.target.closest(".seg-opt"); if(!b)return; setup.mode=b.dataset.v; renderSetup(); });
+$("#win-opts").addEventListener("click",e=>{ const b=e.target.closest(".seg-opt"); if(!b)return; setup.win=b.dataset.v; segSel("#win-opts",setup.win); });
+
+$("#btn-start").addEventListener("click",()=>{
+  const names=[]; for(let i=0;i<setup.players;i++) names.push((setup.names[i]||"").trim()||("Jugador "+(i+1)));
+  const cards=buildCards(setup.peak,setup.mode);
+  G={ names, mode:setup.mode, peak:setup.peak, cards, rounds:cards.length, win:setup.win,
+      scores:Array.from({length:cards.length},()=>Array(setup.players).fill(null)), view:0, finished:false };
+  saveGame(); showPlay();
+});
+
+/* ================= PLAY ================= */
+function total(p){ let s=0; for(let r=0;r<G.rounds;r++){ const v=G.scores[r][p]; if(typeof v==="number")s+=v; } return s; }
+function totals(){ return G.names.map((_,p)=>total(p)); }
+function leaderIdx(){ const t=totals(); let best=G.win==="min"?Infinity:-Infinity,idx=0;
+  t.forEach((v,i)=>{ if((G.win==="min"&&v<best)||(G.win==="max"&&v>best)){best=v;idx=i;} }); return idx; }
+
+function renderRoundBar(){
+  const r=G.view, cards=G.cards[r];
+  $("#r-num").textContent="Ronda "+(r+1)+" / "+G.rounds;
+  $("#r-cards").innerHTML="reparte <b>"+cards+"</b> "+(cards===1?"carta":"cartas");
+  $("#r-prev").disabled=r<=0; $("#r-next").disabled=r>=G.rounds-1;
+  const dots=$("#dots"); dots.innerHTML="";
+  for(let i=0;i<G.rounds;i++){ const d=document.createElement("i");
+    if(i===r)d.className="cur"; else if(G.scores[i].some(v=>typeof v==="number"))d.className="done";
+    dots.appendChild(d); }
+}
+function renderRows(){
+  const box=$("#prows"); box.innerHTML="";
+  const tot=totals(), lead=leaderIdx();
+  const anyScored=G.scores.some(row=>row.some(v=>typeof v==="number"));
+  G.names.forEach((name,p)=>{
+    const v=G.scores[G.view][p];
+    const row=document.createElement("div");
+    row.className="prow"+(anyScored&&p===lead?" lead":""); row.dataset.p=p;
+    const crown=(anyScored&&p===lead)?'<span class="crown">'+SVG("crown",16)+'</span>':'';
+    row.innerHTML=
+      '<div class="pname"><div class="nm">'+crown+'<span>'+escapeHtml(name)+'</span></div>'+
+        '<div class="ac">Total <b>'+tot[p]+'</b></div></div>'+
+      '<div class="pstep">'+
+        '<button class="step-btn" data-d="-1" aria-label="Restar 1">'+SVG("minus",17)+'</button>'+
+        '<input class="num'+(v>0?" pos":v<0?" neg":"")+'" type="number" inputmode="numeric" step="1" value="'+(v==null?"":v)+'" placeholder="0" aria-label="Puntaje de '+escapeHtml(name)+'">'+
+        '<button class="step-btn" data-d="1" aria-label="Sumar 1">'+SVG("plus",17)+'</button>'+
+        '<button class="step-btn zero" aria-label="No sumó (poner en 0)">0</button>'+
+      '</div>';
+    box.appendChild(row);
+  });
+}
+function setScore(p,value){ if(value===""||value==null||isNaN(value)) G.scores[G.view][p]=null; else G.scores[G.view][p]=Math.trunc(Number(value)); saveGame(); }
+
+$("#prows").addEventListener("click",e=>{
+  const btn=e.target.closest(".step-btn"); if(!btn)return;
+  const p=+btn.closest(".prow").dataset.p; let cur=G.scores[G.view][p];
+  if(typeof cur!=="number")cur=DEFAULT_PTS;
+  if(btn.classList.contains("zero")) G.scores[G.view][p]=(cur===0)?DEFAULT_PTS:0;
+  else G.scores[G.view][p]=cur+(+btn.dataset.d);
+  saveGame(); renderRows(); renderRoundBar(); if(!$("#tablewrap").classList.contains("hidden"))renderTable();
+});
+$("#prows").addEventListener("input",e=>{
+  const inp=e.target.closest(".num"); if(!inp)return;
+  const p=+inp.closest(".prow").dataset.p; setScore(p,inp.value.trim());
+  const tot=totals();
+  document.querySelectorAll("#prows .prow").forEach(row=>{ row.querySelector(".ac b").textContent=tot[+row.dataset.p]; });
+  renderRoundBar();
+});
+$("#r-prev").addEventListener("click",()=>{ if(G.view>0){G.view--;saveGame();refreshPlay();} });
+$("#r-next").addEventListener("click",()=>{ if(G.view<G.rounds-1){G.view++;saveGame();refreshPlay();} });
+$("#btn-next").addEventListener("click",()=>{ if(G.view<G.rounds-1){G.view++;saveGame();refreshPlay();} else finish(); });
+$("#tab-toggle").addEventListener("click",()=>{ const w=$("#tablewrap"); const hidden=w.classList.toggle("hidden");
+  $("#tab-toggle").classList.toggle("open",!hidden); if(!hidden)renderTable(); });
+
+function renderTable(){
+  const tot=totals();
+  let head='<tr><th>Ronda</th>'; G.names.forEach(n=> head+='<th>'+escapeHtml(shortName(n))+'</th>'); head+='</tr>';
+  let body='';
+  for(let r=0;r<G.rounds;r++){ body+='<tr'+(r===G.view?' class="currow"':'')+'><th>'+(r+1)+' · '+G.cards[r]+'c</th>';
+    for(let p=0;p<G.names.length;p++){ const v=G.scores[r][p]; body+='<td>'+(v==null?'·':v)+'</td>'; } body+='</tr>'; }
+  let foot='<tr><th>Total</th>'; G.names.forEach((_,p)=> foot+='<td>'+tot[p]+'</td>'); foot+='</tr>';
+  $("#tablewrap").innerHTML='<table class="grid"><thead>'+head+'</thead><tbody>'+body+'</tbody><tfoot>'+foot+'</tfoot></table>';
+}
+function refreshPlay(){ ensureRound(G.view); renderRoundBar(); renderRows();
+  if(!$("#tablewrap").classList.contains("hidden"))renderTable();
+  $("#btn-next").textContent=(G.view>=G.rounds-1)?"Terminar partida":"Ronda siguiente"; }
+
+/* ================= FIN ================= */
+function standings(){ return G.names.map((n,p)=>({name:n,pts:total(p)})).sort((a,b)=> G.win==="min"?a.pts-b.pts:b.pts-a.pts); }
+function finish(){ G.finished=true; saveGame();
+  const st=standings();
+  $("#win-icon").innerHTML=SVG("trophy",34);
+  $("#win-name").textContent=st[0].name;
+  const ol=$("#win-stand"); ol.innerHTML="";
+  st.forEach((row,i)=>{ const li=document.createElement("li"); if(i===0)li.className="first";
+    li.innerHTML='<span class="pos">'+(i+1)+'º</span><span class="who">'+escapeHtml(row.name)+'</span><span class="pts">'+row.pts+'</span>'; ol.appendChild(li); });
+  $("#m-win").classList.add("show");document.body.style.overflow="hidden"; }
+$("#btn-again").addEventListener("click",()=>{ $("#m-win").classList.remove("show");document.body.style.overflow="";clearGame();showSetup(); });
+$("#btn-reset").addEventListener("click",()=>{ if(confirm("¿Empezar una partida nueva? Se borra la actual.")){ $("#m-win").classList.remove("show");document.body.style.overflow="";clearGame();showSetup(); } });
+
+/* ================= vistas ================= */
+function showSetup(){ $("#v-play").classList.remove("on"); $("#v-setup").classList.add("on"); $("#btn-reset").hidden=true; renderSetup(); }
+function showPlay(){ $("#v-setup").classList.remove("on"); $("#v-play").classList.add("on"); $("#btn-reset").hidden=false; refreshPlay(); if(G.finished)finish(); }
+
+/* ================= util ================= */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function shortName(n){ return n.length>8?n.slice(0,7)+"…":n; }
+
+/* ================= arranque ================= */
+Theme.init();
+$("#btn-reset").innerHTML=SVG("refresh",18);
+$("#pl-minus").innerHTML=SVG("minus",22); $("#pl-plus").innerHTML=SVG("plus",22);
+$("#pk-minus").innerHTML=SVG("minus",22); $("#pk-plus").innerHTML=SVG("plus",22);
+$("#r-prev").innerHTML=SVG("left",20); $("#r-next").innerHTML=SVG("right",20);
+$("#tab-caret").innerHTML=SVG("down",15);
+$("#footnote").innerHTML='Cada uno arranca en <b>10</b> · tocá <b>0</b> si no sumó · o escribí el puntaje (puede ser negativo)';
+G=loadGame();
+if(G && Array.isArray(G.scores)){ if(typeof G.view!=="number")G.view=0; if(!Array.isArray(G.cards))G.cards=buildCards(G.rounds||G.scores.length,"up"); showPlay(); }
+else showSetup();
+Shell.mount();
+})();
+</script>
+</body>
+</html>

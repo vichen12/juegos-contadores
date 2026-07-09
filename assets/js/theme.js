@@ -1,22 +1,21 @@
 /* ============================================================
-   El Anotador · Theme
-   Tema global (onix | marfil) compartido por todo el ecosistema.
+   Vichen · Theme
+   Tema global (noche | dia) compartido por todo el ecosistema.
    Se aplica en <html data-theme> y persiste en Store.
-
-   Para evitar el "flash" del tema equivocado, cada página además
-   corre un mini-bootstrap inline en el <head> (ver head-boot).
+   Para evitar el "flash", cada página corre un mini-boot inline
+   en el <head> (lee vichen:theme:current antes de pintar).
    ============================================================ */
 (function (global) {
   "use strict";
 
   const KEY = "current";
   const db = Store.namespace("theme", 1);
-  const VALID = ["onix", "marfil"];
-  const META_BG = { onix: "#0F0F11", marfil: "#F5F3ED" };
+  const VALID = ["noche", "dia"];
+  const META_BG = { noche: "#0F1115", dia: "#F1F1EF" };
 
   function get() {
-    const t = db.get(KEY, "onix");
-    return VALID.includes(t) ? t : "onix";
+    const t = db.get(KEY, "noche");
+    return VALID.includes(t) ? t : "noche";
   }
 
   function apply(t) {
@@ -27,7 +26,7 @@
       meta.name = "theme-color";
       document.head.appendChild(meta);
     }
-    meta.setAttribute("content", META_BG[t] || META_BG.onix);
+    meta.setAttribute("content", META_BG[t] || META_BG.noche);
   }
 
   function set(t) {
@@ -36,10 +35,11 @@
     apply(t);
   }
 
+  function toggle() { set(get() === "noche" ? "dia" : "noche"); }
+
   function init() { apply(get()); }
 
-  // Si otra app/pestaña cambia el tema, reflejarlo al toque.
   db.subscribe(KEY, (t) => { if (VALID.includes(t)) apply(t); });
 
-  global.Theme = { get, set, apply, init, VALID };
+  global.Theme = { get, set, toggle, apply, init, VALID };
 })(window);
