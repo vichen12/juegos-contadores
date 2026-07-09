@@ -63,7 +63,7 @@ main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:660px;
 .slabel{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:8px;text-align:center}
 .cuadros{display:flex;flex-wrap:wrap;gap:var(--gap);justify-content:center;width:calc(2 * var(--fsize) + var(--gap));margin:0 auto}
 .cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto}
-.cuad line{stroke:var(--hair-2);stroke-width:2.4;stroke-linecap:round;pathLength:1;stroke-dasharray:1;stroke-dashoffset:0}
+.cuad line{stroke:var(--hair-2);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
 .cuad .lit line{stroke:var(--ink);stroke-width:2.8}
 .cuad .lit.diag line{stroke:var(--accent-strong);stroke-width:4;filter:drop-shadow(0 0 3px var(--accent-tint))}
 .cuad .draw line{animation:strike .34s var(--ease) forwards}
@@ -248,7 +248,7 @@ const buzz=p=>{ if(S.vibe&&navigator.vibrate)navigator.vibrate(p); };
 const LINES=[[7,7,37,7],[37,7,37,37],[37,37,7,37],[7,37,7,7],[7,7,37,37]];
 function matchG(l,lit,isNew){ const [x1,y1,x2,y2]=LINES[l];
   const cls=[(l===4?"diag":""),lit?"lit":"",isNew?"draw":""].join(" ").trim();
-  return `<g class="${cls}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/></g>`; }
+  return `<g class="${cls}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" pathLength="1"/></g>`; }
 const sections=()=> S.limit%2 ? [["Puntos",S.limit]] : [["Malas",S.limit/2],["Buenas",S.limit/2]];
 
 /* -------- render -------- */
