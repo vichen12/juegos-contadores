@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="es-AR" data-theme="onix">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F0F11">
+<title>El Anotador · Truco</title>
+<link rel="manifest" href="../../manifest.webmanifest">
+<link rel="icon" href="../../assets/icons/favicon.png">
+<link rel="apple-touch-icon" href="../../assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="El Anotador">
+<meta name="description" content="Contador de puntos de Truco: sobrio, elegante y en blanco y negro.">
+
+<!-- Boot del tema: evita el flash del tema equivocado -->
+<script>
+(function(){try{
+  var raw=localStorage.getItem("anotador:theme:current");
+  var t=raw?JSON.parse(raw).d:"onix";
+  if(t!=="onix"&&t!=="marfil")t="onix";
+  document.documentElement.setAttribute("data-theme",t);
+}catch(e){}})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/tokens.css">
+<link rel="stylesheet" href="../../assets/css/base.css">
+<link rel="stylesheet" href="../../assets/css/shell.css">
+<style>
+:root{ --fsize:min(66px,14vw); --gap:14px; }
+body{
+  font-family:var(--sans);color:var(--ink);background:var(--paper);
+  min-height:100dvh;display:flex;flex-direction:column;
+  user-select:none;-webkit-user-select:none;overflow-x:hidden;
+}
+
+/* ================= Cabecera ================= */
+header{position:relative;padding:calc(22px + var(--safe-top)) 16px 8px;text-align:center}
+header h1{
+  font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:clamp(28px,8vw,40px);letter-spacing:.01em;margin:0;color:var(--ink);
+}
+.rule{display:flex;align-items:center;justify-content:center;gap:12px;margin:6px auto 0;max-width:230px}
+.rule::before,.rule::after{content:"";height:1px;flex:1;background:var(--hair)}
+.rule span{font-size:10px;letter-spacing:.42em;text-transform:uppercase;color:var(--ink-soft)}
+.hbar{position:absolute;top:calc(14px + var(--safe-top));right:16px}
+.ib{
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--hair);
+  background:transparent;color:var(--ink);font-size:17px;cursor:pointer;
+  display:grid;place-items:center;transition:.15s;
+}
+.ib:active{transform:scale(.9)}
+.ib:hover{background:var(--panel)}
+
+/* ================= Estado ================= */
+.status{text-align:center;padding:10px 16px 2px;font-size:12px;letter-spacing:.08em;color:var(--ink-soft)}
+.status b{color:var(--ink);font-weight:500}
+
+/* ================= Tablero ================= */
+main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1px;max-width:640px;width:100%;margin:6px auto 0;
+  border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);background:var(--hair)}
+.team{
+  background:var(--paper);padding:18px 12px 16px;display:flex;flex-direction:column;position:relative;
+}
+.tname{
+  all:unset;cursor:pointer;text-align:center;display:block;
+  font-weight:500;font-size:12px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft);
+  padding:4px;border-radius:6px;
+}
+.tname .emo{font-family:var(--serif);font-size:22px;display:block;letter-spacing:0;color:var(--ink);margin-bottom:5px}
+.tname:hover{color:var(--ink)}
+.badge{text-align:center;font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);opacity:.7;margin-top:8px;min-height:12px}
+.score{
+  font-family:var(--serif);font-weight:500;
+  font-size:clamp(64px,19vw,104px);line-height:.9;text-align:center;color:var(--ink);
+  cursor:pointer;margin:4px 0 0;transition:transform .1s;font-variant-numeric:lining-nums;
+}
+.score:active{transform:scale(.96)}
+.left{text-align:center;font-size:11px;letter-spacing:.04em;color:var(--ink-soft);margin:4px 0 12px;min-height:14px}
+
+/* fósforos finos, 2 columnas (filas de 10) */
+.fos{display:flex;flex-direction:column;gap:16px;flex:1;justify-content:center;padding:2px 0 8px}
+.slabel{font-size:9px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);opacity:.65;display:block;margin-bottom:9px;text-align:center}
+.cuadros{display:flex;flex-wrap:wrap;gap:var(--gap);justify-content:center;width:calc(2 * var(--fsize) + var(--gap));margin:0 auto}
+.cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto}
+.cuad line{stroke:var(--ghost);stroke-width:2.1;stroke-linecap:round;pathLength:1;stroke-dasharray:1;stroke-dashoffset:0}
+.cuad .lit line{stroke:var(--ink)}
+.cuad .lit.diag line{stroke:var(--ink-soft)}
+.cuad .draw line{animation:strike .34s ease forwards}
+@keyframes strike{from{stroke-dashoffset:1;opacity:.15}to{stroke-dashoffset:0;opacity:1}}
+
+/* controles */
+.mainpad{display:flex;gap:10px;margin-top:4px}
+.mainpad button{cursor:pointer;transition:transform .1s,background .15s;font-family:var(--sans)}
+.mainpad .minus{
+  flex:0 0 52px;height:52px;border-radius:50%;border:1px solid var(--hair);
+  background:transparent;color:var(--ink-soft);font-size:22px;font-weight:300;display:grid;place-items:center;
+}
+.mainpad .minus:hover{background:var(--panel);color:var(--ink)}
+.mainpad .plus{
+  flex:1;height:52px;border-radius:26px;border:1px solid var(--ink);
+  background:var(--ink);color:var(--paper);font-size:15px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+}
+.mainpad button:active{transform:scale(.95)}
+button:disabled{opacity:.28;pointer-events:none}
+
+/* ================= Historial ================= */
+.log-wrap{max-width:640px;width:100%;margin:0 auto;padding:12px 16px 16px}
+.log-head{display:flex;align-items:center;justify-content:space-between}
+.log-head .toggle{all:unset;cursor:pointer;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--ink-soft)}
+.undo{
+  all:unset;cursor:pointer;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);
+  padding:7px 16px;border:1px solid var(--hair);border-radius:999px;
+}
+.undo:active{transform:scale(.95)}
+.log{list-style:none;margin:10px 0 0;padding:0;max-height:130px;overflow-y:auto}
+.log.hidden{display:none}
+.log li{display:flex;justify-content:space-between;gap:12px;align-items:baseline;padding:9px 2px;border-bottom:1px solid var(--hair);font-size:13px}
+.log li:last-child{border-bottom:0}
+.log li .who{font-weight:500;letter-spacing:.02em}
+.log li .what{color:var(--ink-soft);flex:1;font-size:12px;letter-spacing:.06em}
+.log li .amt{font-family:var(--serif);font-size:16px;color:var(--ink)}
+.log li .amt.neg{color:var(--ink-soft)}
+.log-empty{padding:16px 2px;font-size:12px;color:var(--ink-soft);text-align:center;letter-spacing:.04em}
+
+/* ================= Modales ================= */
+.modal{position:fixed;inset:0;z-index:30;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);backdrop-filter:blur(3px)}
+.modal.show{display:flex}
+.card{
+  width:100%;max-width:440px;max-height:90dvh;overflow-y:auto;background:var(--paper);
+  border:1px solid var(--hair);border-radius:22px 22px 0 0;padding:26px 24px 32px;
+  animation:rise .32s cubic-bezier(.2,1.1,.35,1) both;
+}
+@media(min-width:480px){ .modal{align-items:center;padding:20px} .card{border-radius:22px} }
+@keyframes rise{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.card h2{font-family:var(--serif);font-style:italic;font-weight:500;font-size:24px;margin:0 0 6px;text-align:center}
+.card .h-sub{text-align:center;font-size:9px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:16px}
+.sect{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft);margin:22px 0 10px;display:flex;align-items:center;gap:12px}
+.sect::after{content:"";flex:1;height:1px;background:var(--hair)}
+.f{margin-bottom:10px}
+.f input[type=text]{
+  width:100%;background:transparent;border:0;border-bottom:1px solid var(--hair);border-radius:0;
+  color:var(--ink);font-family:var(--serif);font-size:18px;padding:8px 2px;outline:none;
+}
+.f input:focus{border-color:var(--ink)}
+.emoji-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:6px}
+.epick{
+  width:42px;height:42px;font-family:var(--serif);font-size:20px;border-radius:12px;cursor:pointer;
+  border:1px solid var(--hair);background:transparent;color:var(--ink);display:grid;place-items:center;transition:.12s;
+}
+.epick.on{border-color:var(--ink);background:var(--panel)}
+.optrow{display:flex;gap:7px}
+.opt{
+  flex:1;border:1px solid var(--hair);background:transparent;color:var(--ink-soft);
+  font-family:var(--sans);font-weight:500;font-size:14px;padding:11px 0;border-radius:11px;cursor:pointer;transition:.12s;text-align:center;letter-spacing:.04em;
+}
+.opt.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tcard{
+  border:1px solid var(--hair);border-radius:13px;padding:12px 14px;cursor:pointer;
+  display:flex;align-items:center;gap:11px;background:transparent;transition:.12s;
+}
+.tcard.on{border-color:var(--ink);background:var(--panel)}
+.tdots{display:flex;gap:-4px}
+.tdots i{width:16px;height:16px;border-radius:50%;display:block;border:1px solid var(--hair)}
+.tdots i+i{margin-left:-5px}
+.tcard span.nm{font-size:13px;font-weight:500;letter-spacing:.04em}
+.switch{display:flex;align-items:center;justify-content:space-between;font-size:14px;padding:11px 2px;border-bottom:1px solid var(--hair)}
+.switch:last-of-type{border-bottom:0}
+.sw{width:46px;height:26px;border-radius:999px;border:1px solid var(--hair);background:transparent;position:relative;cursor:pointer;transition:.15s;flex:0 0 auto}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--ink-soft);transition:.15s}
+.sw.on{background:var(--ink);border-color:var(--ink)}
+.sw.on::after{left:22px;background:var(--paper)}
+.cta{
+  all:unset;display:block;text-align:center;cursor:pointer;margin-top:22px;
+  font-size:14px;letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+  background:var(--ink);color:var(--paper);padding:14px;border-radius:13px;
+}
+.cta:active{transform:scale(.98)}
+.ghost{all:unset;display:block;text-align:center;cursor:pointer;margin-top:14px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ganador */
+.win-card{text-align:center}
+.win-card .crown{font-family:var(--serif);font-size:40px;line-height:1;color:var(--ink)}
+.win-card .wemo{font-family:var(--serif);font-size:52px;margin:6px 0}
+.win-card h2{font-style:normal;font-size:26px;margin:2px 0 2px}
+.win-card .h-sub{margin-bottom:4px}
+.win-card .fin{font-family:var(--serif);font-size:18px;color:var(--ink-soft);margin:6px 0 4px}
+canvas#confetti{position:fixed;inset:0;z-index:25;pointer-events:none}
+
+footer{text-align:center;font-size:10px;letter-spacing:.1em;color:var(--ink-soft);opacity:.7;padding:0 16px calc(16px + var(--safe-bottom))}
+@media (prefers-reduced-motion:reduce){ .cuad .draw line{animation:none;stroke-dashoffset:0;opacity:1} .card{animation:none} }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>El Anotador</h1>
+  <div class="rule"><span>Truco</span></div>
+  <div class="hbar">
+    <button class="ib" id="btn-settings" aria-label="Ajustes">⚙</button>
+  </div>
+</header>
+
+<div class="status" id="status"></div>
+
+<main id="board"></main>
+
+<div class="log-wrap">
+  <div class="log-head">
+    <button class="toggle" id="log-toggle">Historial ▾</button>
+    <button class="undo" id="btn-undo" disabled>↩ Deshacer</button>
+  </div>
+  <ul class="log hidden" id="log"></ul>
+</div>
+
+<footer>Tocá el número o + para sumar · ⚙ para configurar</footer>
+
+<!-- Ajustes -->
+<div class="modal" id="m-settings" role="dialog" aria-modal="true">
+  <div class="card">
+    <h2>Ajustes</h2>
+    <div class="h-sub">Personalización</div>
+
+    <div class="sect">Equipo uno</div>
+    <div class="f"><input type="text" id="in-n0" maxlength="14" placeholder="Nosotros"></div>
+    <div class="emoji-row" id="emo-0"></div>
+
+    <div class="sect">Equipo dos</div>
+    <div class="f"><input type="text" id="in-n1" maxlength="14" placeholder="Ellos"></div>
+    <div class="emoji-row" id="emo-1"></div>
+
+    <div class="sect">Partido a</div>
+    <div class="optrow" id="limit-opts">
+      <button class="opt" data-v="12">12</button>
+      <button class="opt" data-v="15">15</button>
+      <button class="opt" data-v="18">18</button>
+      <button class="opt" data-v="24">24</button>
+      <button class="opt on" data-v="30">30</button>
+    </div>
+
+    <div class="sect">Tamaño de fósforos</div>
+    <div class="optrow" id="size-opts">
+      <button class="opt" data-v="chico">Chico</button>
+      <button class="opt" data-v="medio">Medio</button>
+      <button class="opt on" data-v="grande">Grande</button>
+    </div>
+
+    <div class="sect">Tema</div>
+    <div class="theme-grid" id="themes">
+      <button class="tcard on" data-t="onix"><span class="tdots"><i style="background:#0F0F11"></i><i style="background:#ECEAE3"></i></span><span class="nm">Ónix</span></button>
+      <button class="tcard" data-t="marfil"><span class="tdots"><i style="background:#F5F3ED"></i><i style="background:#17160F"></i></span><span class="nm">Marfil</span></button>
+    </div>
+
+    <div class="sect">Preferencias</div>
+    <div class="switch"><span>Sonidos</span><div class="sw on" id="sw-sound" role="switch" tabindex="0"></div></div>
+    <div class="switch"><span>Vibración</span><div class="sw on" id="sw-vibe" role="switch" tabindex="0"></div></div>
+    <div class="switch"><span>Mostrar malas / buenas</span><div class="sw on" id="sw-badge" role="switch" tabindex="0"></div></div>
+    <div class="switch"><span>Confeti al ganar</span><div class="sw on" id="sw-conf" role="switch" tabindex="0"></div></div>
+
+    <button class="cta" id="btn-apply">Guardar</button>
+    <button class="ghost" id="btn-newgame">Reiniciar partido</button>
+  </div>
+</div>
+
+<!-- Ganador -->
+<div class="modal" id="m-win" role="dialog" aria-modal="true">
+  <div class="card win-card">
+    <div class="crown">♛</div>
+    <div class="wemo" id="win-emo"></div>
+    <div class="h-sub">Ganador</div>
+    <h2 id="win-name"></h2>
+    <div class="fin" id="win-fin"></div>
+    <button class="cta" id="btn-rev">Revancha</button>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<!-- Núcleo del ecosistema -->
+<script src="../../assets/js/store.js"></script>
+<script src="../../assets/js/registry.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="../../assets/js/pwa.js"></script>
+<script src="../../assets/js/shell.js"></script>
+
+<script>
+(() => {
+"use strict";
+
+const db = Store.namespace("truco", 1);
+
+const EMOJIS = ["♠","♣","★","♛","♜","♞","☾","✦","❖","⚑"];
+const SIZES = { chico:"min(52px,12vw)", medio:"min(58px,13vw)", grande:"min(66px,14.5vw)" };
+
+const DEFAULTS = {
+  limit:30, size:"grande",
+  sound:true, vibe:true, badge:true, conf:true,
+  names:["Nosotros","Ellos"], emojis:["♠","♣"],
+};
+
+const S = {
+  limit:30, size:"grande",
+  sound:true, vibe:true, badge:true, conf:true,
+  names:["Nosotros","Ellos"], emojis:["♠","♣"],
+  pts:[0,0], prev:[0,0], hist:[], over:false, logOpen:false,
+};
+
+/* ---------- persistencia (localStorage del celu) ---------- */
+function loadState(){
+  const cfg = db.get("settings", null);
+  if(cfg){
+    S.limit=cfg.limit ?? S.limit; S.size=cfg.size ?? S.size;
+    S.sound=cfg.sound ?? S.sound; S.vibe=cfg.vibe ?? S.vibe;
+    S.badge=cfg.badge ?? S.badge; S.conf=cfg.conf ?? S.conf;
+    if(Array.isArray(cfg.names)) S.names=cfg.names.slice(0,2);
+    if(Array.isArray(cfg.emojis)) S.emojis=cfg.emojis.slice(0,2);
+  }
+  const g = db.get("game", null);
+  if(g){
+    if(Array.isArray(g.pts)) S.pts=g.pts.slice(0,2);
+    if(Array.isArray(g.hist)) S.hist=g.hist;
+    S.over=!!g.over;
+    S.prev=[...S.pts];
+  }
+}
+let saveT=null;
+function save(){
+  if(saveT) return; // agrupa escrituras
+  saveT=setTimeout(()=>{
+    saveT=null;
+    db.set("settings",{limit:S.limit,size:S.size,sound:S.sound,vibe:S.vibe,badge:S.badge,conf:S.conf,names:S.names,emojis:S.emojis});
+    db.set("game",{pts:S.pts,hist:S.hist,over:S.over});
+  },0);
+}
+
+const $ = s => document.querySelector(s);
+const board = $("#board");
+
+/* ---------- sonido / vibración ---------- */
+let actx=null;
+function tone(f,d=.07,g=.045,t="sine"){
+  if(!S.sound)return;
+  try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const o=actx.createOscillator(),n=actx.createGain();
+    o.type=t;o.frequency.value=f;n.gain.setValueAtTime(g,actx.currentTime);
+    n.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+d);
+    o.connect(n).connect(actx.destination);o.start();o.stop(actx.currentTime+d);
+  }catch(e){}
+}
+const sAdd=()=>tone(600,.055,.035,"triangle");
+const sSub=()=>tone(240,.09,.035,"sine");
+const sWin=()=>{tone(523,.13,.05);setTimeout(()=>tone(659,.13,.05),140);setTimeout(()=>tone(784,.3,.06),300);};
+const buzz=p=>{ if(S.vibe&&navigator.vibrate)navigator.vibrate(p); };
+
+/* ---------- fósforos ---------- */
+const LINES=[[7,7,37,7],[37,7,37,37],[37,37,7,37],[7,37,7,7],[7,7,37,37]];
+function matchG(l,lit,isNew){
+  const [x1,y1,x2,y2]=LINES[l];
+  const cls=[(l===4?"diag":""),lit?"lit":"",isNew?"draw":""].join(" ").trim();
+  return `<g class="${cls}"><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/></g>`;
+}
+const sections=()=> S.limit%2 ? [["Puntos",S.limit]] : [["Malas",S.limit/2],["Buenas",S.limit/2]];
+
+/* ---------- render ---------- */
+function teamHTML(i){
+  return `
+  <section class="team" data-i="${i}">
+    <button class="tname" data-name aria-label="Editar equipo"><span class="emo">${S.emojis[i]}</span>${S.names[i]}</button>
+    <div class="score" data-score role="button" aria-label="Sumar 1">0</div>
+    <div class="badge" data-badge></div>
+    <div class="left" data-left></div>
+    <div class="fos" data-fos></div>
+    <div class="mainpad">
+      <button class="minus" data-act="sub" aria-label="Restar 1">−</button>
+      <button class="plus" data-act="add" aria-label="Sumar 1">Sumar</button>
+    </div>
+  </section>`;
+}
+function buildBoard(){
+  board.innerHTML=teamHTML(0)+teamHTML(1);
+  board.querySelectorAll(".team").forEach(t=>{
+    const i=+t.dataset.i;
+    t.querySelector("[data-score]").addEventListener("click",()=>score(i,1));
+    t.querySelector('[data-act="add"]').addEventListener("click",()=>score(i,1));
+    t.querySelector('[data-act="sub"]').addEventListener("click",()=>score(i,-1));
+    t.querySelector("[data-name]").addEventListener("click",openSettings);
+  });
+  renderAll(true);
+}
+function renderTeam(t,silent){
+  const i=+t.dataset.i,pts=S.pts[i],prev=silent?pts:S.prev[i];
+  t.querySelector("[data-name]").innerHTML=`<span class="emo">${S.emojis[i]}</span>${S.names[i]}`;
+  let g=0,html="";
+  for(const [label,count] of sections()){
+    let cells="";const upto=g+count;
+    while(g<upto){
+      let lines="";
+      for(let l=0;l<5&&g<upto;l++){const idx=g++;lines+=matchG(l,idx<pts,idx>=prev&&idx<pts);}
+      cells+=`<svg class="cuad" viewBox="0 0 44 44" aria-hidden="true">${lines}</svg>`;
+    }
+    html+=`<div><span class="slabel">${label}</span><div class="cuadros">${cells}</div></div>`;
+  }
+  t.querySelector("[data-fos]").innerHTML=html;
+  t.querySelector("[data-score]").textContent=pts;
+  const badge=t.querySelector("[data-badge]");
+  if(!S.badge||S.limit%2) badge.textContent="";
+  else badge.textContent = pts>=S.limit/2 ? "En las buenas" : "En las malas";
+  const rest=S.limit-pts;
+  t.querySelector("[data-left]").textContent = rest===0?"" : rest===1?"A un punto" : `Faltan ${rest}`;
+  t.querySelector('[data-act="sub"]').disabled=pts<=0||S.over;
+  t.querySelector('[data-act="add"]').disabled=S.over||pts>=S.limit;
+}
+function renderAll(silent){
+  board.querySelectorAll(".team").forEach(t=>renderTeam(t,silent));
+  S.prev=[...S.pts];
+  const dif=Math.abs(S.pts[0]-S.pts[1]);
+  const lead=S.pts[0]>S.pts[1]?0:1;
+  $("#status").innerHTML = S.pts[0]===S.pts[1]
+    ? `Partido a <b>${S.limit}</b> · empate`
+    : `Partido a <b>${S.limit}</b> · <b>${S.names[lead]}</b> arriba por ${dif}`;
+  renderLog();
+  save();
+}
+
+/* ---------- lógica ---------- */
+function score(i,d){
+  if(S.over)return;
+  const next=Math.max(0,Math.min(S.limit,S.pts[i]+d));
+  const real=next-S.pts[i];
+  if(!real)return;
+  S.prev=[...S.pts];S.pts[i]=next;
+  S.hist.push({t:i,d:real,time:Date.now()});
+  real>0?(sAdd(),buzz(11)):(sSub(),buzz(6));
+  renderAll(false);
+  if(next>=S.limit)endGame(i);
+}
+function undo(){
+  if(!S.hist.length||S.over)return;
+  const h=S.hist.pop();
+  S.pts[h.t]=Math.max(0,S.pts[h.t]-h.d);
+  sSub();buzz(6);renderAll(true);
+}
+function renderLog(){
+  const log=$("#log");
+  if(!S.hist.length){ log.innerHTML=`<li class="log-empty">Todavía no se anotó nada</li>`; }
+  else{
+    log.innerHTML=S.hist.slice().reverse().map(h=>{
+      const hh=new Date(h.time).toTimeString().slice(0,5);
+      return `<li><span class="who">${S.emojis[h.t]} ${S.names[h.t]}</span><span class="what">${hh}</span><span class="amt${h.d<0?" neg":""}">${h.d>0?"+":""}${h.d}</span></li>`;
+    }).join("");
+  }
+  $("#btn-undo").disabled=!S.hist.length||S.over;
+}
+$("#log-toggle").addEventListener("click",()=>{
+  S.logOpen=!S.logOpen;
+  $("#log").classList.toggle("hidden",!S.logOpen);
+  $("#log-toggle").textContent=S.logOpen?"Historial ▴":"Historial ▾";
+});
+
+/* ---------- fin ---------- */
+function endGame(i){
+  S.over=true;sWin();buzz([70,40,130]);
+  $("#win-emo").textContent=S.emojis[i];
+  $("#win-name").textContent=S.names[i];
+  $("#win-fin").textContent=`${S.names[0]} ${S.pts[0]} — ${S.pts[1]} ${S.names[1]}`;
+  $("#m-win").classList.add("show");
+  if(S.conf)confetti();
+  renderAll(true);
+}
+function resetGame(){
+  S.pts=[0,0];S.prev=[0,0];S.hist=[];S.over=false;
+  $("#m-win").classList.remove("show");$("#m-settings").classList.remove("show");
+  stopConfetti();renderAll(true);
+}
+
+/* ---------- confetti monocromo ---------- */
+const cv=$("#confetti"),cx=cv.getContext("2d");
+let parts=[],raf=null;
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  cv.width=innerWidth;cv.height=innerHeight;
+  const cs=getComputedStyle(document.documentElement);
+  const ink=cs.getPropertyValue("--ink").trim(), soft=cs.getPropertyValue("--ink-soft").trim();
+  const colors=[ink,soft,ink];
+  parts=Array.from({length:130},()=>({
+    x:Math.random()*cv.width,y:-20-Math.random()*cv.height*.5,
+    w:4+Math.random()*5,h:7+Math.random()*7,
+    vy:2+Math.random()*3,vx:-1+Math.random()*2,
+    r:Math.random()*Math.PI,vr:-.12+Math.random()*.24,
+    c:colors[(Math.random()*colors.length)|0],
+  }));
+  const start=performance.now();
+  (function loop(now){
+    cx.clearRect(0,0,cv.width,cv.height);
+    for(const p of parts){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;
+      cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.globalAlpha=.85;
+      cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.h/2,p.w,p.h);cx.restore();}
+    if(now-start<4200)raf=requestAnimationFrame(loop);else stopConfetti();
+  })(start);
+}
+function stopConfetti(){if(raf)cancelAnimationFrame(raf);raf=null;cx.clearRect(0,0,cv.width,cv.height);}
+
+/* ---------- ajustes ---------- */
+let draft={};
+function emojiRow(el,current,onPick){
+  el.innerHTML=EMOJIS.map(v=>`<button class="epick${v===current?" on":""}" data-v="${v}">${v}</button>`).join("");
+  el.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+    el.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");onPick(b.dataset.v);
+  }));
+}
+function openSettings(){
+  draft={emojis:[...S.emojis],theme:Theme.get(),size:S.size};
+  $("#in-n0").value=S.names[0];$("#in-n1").value=S.names[1];
+  emojiRow($("#emo-0"),S.emojis[0],v=>draft.emojis[0]=v);
+  emojiRow($("#emo-1"),S.emojis[1],v=>draft.emojis[1]=v);
+  selOpts("#limit-opts",S.limit); selOpts("#size-opts",S.size);
+  document.querySelectorAll("#themes .tcard").forEach(o=>o.classList.toggle("on",o.dataset.t===Theme.get()));
+  ["sound","vibe","badge","conf"].forEach(k=>setSw("#sw-"+k,S[k]));
+  $("#m-settings").classList.add("show");
+}
+function selOpts(sel,val){document.querySelectorAll(sel+" .opt").forEach(o=>o.classList.toggle("on",o.dataset.v==String(val)));}
+function setSw(sel,on){const e=$(sel);e.classList.toggle("on",on);e.setAttribute("aria-checked",on);}
+function swVal(sel){return $(sel).classList.contains("on");}
+
+document.querySelectorAll(".sw").forEach(sw=>{
+  const flip=()=>{sw.classList.toggle("on");sw.setAttribute("aria-checked",sw.classList.contains("on"));};
+  sw.addEventListener("click",flip);
+  sw.addEventListener("keydown",e=>{if(e.key===" "||e.key==="Enter"){e.preventDefault();flip();}});
+});
+["#limit-opts","#size-opts"].forEach(grp=>
+  document.querySelectorAll(grp+" .opt").forEach(o=>o.addEventListener("click",()=>{
+    document.querySelectorAll(grp+" .opt").forEach(x=>x.classList.remove("on"));o.classList.add("on");
+    if(grp==="#size-opts"){draft.size=o.dataset.v;document.body.style.setProperty("--fsize",SIZES[o.dataset.v]);}
+  })));
+document.querySelectorAll("#themes .tcard").forEach(o=>o.addEventListener("click",()=>{
+  document.querySelectorAll("#themes .tcard").forEach(x=>x.classList.remove("on"));o.classList.add("on");
+  draft.theme=o.dataset.t;document.documentElement.setAttribute("data-theme",o.dataset.t);
+}));
+
+$("#btn-apply").addEventListener("click",()=>{
+  S.names[0]=($("#in-n0").value.trim()||"Nosotros").slice(0,14);
+  S.names[1]=($("#in-n1").value.trim()||"Ellos").slice(0,14);
+  S.emojis=[...draft.emojis];
+  Theme.set(draft.theme||Theme.get());
+  S.size=draft.size||S.size; document.body.style.setProperty("--fsize",SIZES[S.size]);
+  ["sound","vibe","badge","conf"].forEach(k=>S[k]=swVal("#sw-"+k));
+  const nl=+document.querySelector("#limit-opts .opt.on").dataset.v;
+  if(nl!==S.limit){S.limit=nl; if(S.pts[0]||S.pts[1]){resetGame();save();return;}}
+  $("#m-settings").classList.remove("show");renderAll(true);
+  if(S.sound)sAdd();
+});
+$("#btn-newgame").addEventListener("click",()=>{
+  if(!S.pts[0]&&!S.pts[1]){resetGame();return;}
+  if(confirm("¿Reiniciar el partido?"))resetGame();
+});
+$("#btn-settings").addEventListener("click",openSettings);
+$("#btn-rev").addEventListener("click",resetGame);
+$("#btn-undo").addEventListener("click",undo);
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{
+  if(e.target===m&&m.id!=="m-win"){m.classList.remove("show");
+    document.documentElement.setAttribute("data-theme",Theme.get());document.body.style.setProperty("--fsize",SIZES[S.size]);}
+}));
+document.addEventListener("keydown",e=>{
+  if(e.target.tagName==="INPUT")return;
+  const k=e.key.toLowerCase();
+  if(k==="q")score(0,1); if(k==="a")score(0,-1);
+  if(k==="p")score(1,1); if(k==="l")score(1,-1); if(k==="z")undo();
+});
+
+/* ---------- arranque ---------- */
+loadState();
+Theme.init();
+document.body.style.setProperty("--fsize",SIZES[S.size]);
+buildBoard();
+Shell.mount();
+})();
+</script>
+</body>
+</html>

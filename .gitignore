@@ -1,0 +1,14 @@
+# Dependencias (no las usamos en producción; el sitio es estático)
+node_modules/
+
+# Sistema / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+
+# Vercel
+.vercel/
+
+# Temporales
+*.tmp

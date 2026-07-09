@@ -1,0 +1,26 @@
+/* ============================================================
+   El Anotador · Base / reset compartido
+   ============================================================ */
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+html{background:var(--paper)}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  transition:background .4s, color .4s;
+}
+img,svg{display:block;max-width:100%}
+button{font-family:inherit}
+:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
+
+/* Fuera de la app hay poco texto seleccionable; las apps de juego
+   fijan user-select:none por su cuenta cuando lo necesitan. */
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;transition-duration:.001ms !important}
+}

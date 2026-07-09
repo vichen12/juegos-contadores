@@ -1,0 +1,117 @@
+/* ============================================================
+   El Anotador · Shell
+   Botón hamburguesa + drawer para saltar entre apps.
+   Se inyecta en cada app vía assets/js/shell.js
+   ============================================================ */
+
+/* ---- Botón hamburguesa (arriba a la izquierda) ---- */
+.shell-burger{
+  position:fixed;
+  top:calc(14px + var(--safe-top));
+  left:14px;
+  z-index:60;
+  width:42px;height:42px;border-radius:50%;
+  border:1px solid var(--hair);
+  background:color-mix(in srgb, var(--paper) 78%, transparent);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:var(--ink);cursor:pointer;
+  display:grid;place-items:center;
+  transition:transform .15s, background .15s;
+}
+.shell-burger:hover{background:var(--panel)}
+.shell-burger:active{transform:scale(.9)}
+.shell-burger svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round}
+
+/* ---- Overlay + drawer ---- */
+.shell-scrim{
+  position:fixed;inset:0;z-index:70;
+  background:var(--scrim);
+  backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);
+  opacity:0;pointer-events:none;transition:opacity .28s ease;
+}
+.shell-scrim.open{opacity:1;pointer-events:auto}
+
+.shell-drawer{
+  position:fixed;top:0;left:0;z-index:80;
+  height:100dvh;width:min(320px,86vw);
+  background:var(--paper);
+  border-right:1px solid var(--hair);
+  transform:translateX(-102%);
+  transition:transform .32s cubic-bezier(.2,.9,.3,1);
+  display:flex;flex-direction:column;
+  padding:calc(22px + var(--safe-top)) 0 calc(18px + var(--safe-bottom));
+  overflow-y:auto;
+}
+.shell-drawer.open{transform:none}
+
+.shell-brand{
+  padding:0 22px 18px;
+  border-bottom:1px solid var(--hair);
+  margin-bottom:8px;
+}
+.shell-brand .title{
+  font-family:var(--serif);font-style:italic;font-weight:500;
+  font-size:26px;letter-spacing:.01em;margin:0;color:var(--ink);
+}
+.shell-brand .sub{
+  font-size:9px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--ink-soft);margin-top:6px;
+}
+
+.shell-sect{
+  font-size:9px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--ink-soft);opacity:.75;
+  padding:16px 22px 8px;
+}
+
+.shell-nav{list-style:none;margin:0;padding:0 12px}
+.shell-link{
+  all:unset;box-sizing:border-box;
+  display:flex;align-items:center;gap:14px;width:100%;
+  padding:13px 12px;border-radius:12px;cursor:pointer;
+  color:var(--ink);transition:background .15s;
+}
+.shell-link:hover{background:var(--panel)}
+.shell-link.active{background:var(--panel)}
+.shell-link .ic{
+  flex:0 0 34px;height:34px;border-radius:10px;
+  border:1px solid var(--hair);
+  display:grid;place-items:center;
+  font-family:var(--serif);font-size:18px;color:var(--ink);
+}
+.shell-link.active .ic{border-color:var(--ink)}
+.shell-link .tx{display:flex;flex-direction:column;gap:2px;min-width:0}
+.shell-link .nm{font-weight:500;font-size:15px;letter-spacing:.02em}
+.shell-link .ds{font-size:11px;color:var(--ink-soft);letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.shell-link .go{margin-left:auto;color:var(--ink-soft);font-size:15px}
+
+/* ---- Pie del drawer: tema + instalar ---- */
+.shell-foot{margin-top:auto;padding:14px 22px 0;border-top:1px solid var(--hair)}
+.shell-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 0;font-size:14px;
+}
+.shell-themes{display:flex;gap:8px}
+.shell-tdot{
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  border:1px solid var(--hair);position:relative;overflow:hidden;
+}
+.shell-tdot::before,.shell-tdot::after{content:"";position:absolute;inset:0;width:50%}
+.shell-tdot::after{left:50%}
+.shell-tdot[data-t="onix"]::before{background:#0F0F11}
+.shell-tdot[data-t="onix"]::after{background:#ECEAE3}
+.shell-tdot[data-t="marfil"]::before{background:#F5F3ED}
+.shell-tdot[data-t="marfil"]::after{background:#17160F}
+.shell-tdot.on{border-color:var(--ink);box-shadow:0 0 0 2px var(--panel)}
+
+.shell-install{
+  all:unset;box-sizing:border-box;display:none;text-align:center;cursor:pointer;
+  width:100%;margin-top:8px;padding:12px;border-radius:12px;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+}
+.shell-install.show{display:block}
+.shell-install:active{transform:scale(.98)}
+
+.shell-version{padding:12px 22px 0;font-size:10px;letter-spacing:.1em;color:var(--ink-soft);opacity:.6}

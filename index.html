@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es-AR" data-theme="onix">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0F0F11">
+<title>El Anotador · Tus apps</title>
+<meta name="description" content="Ecosistema de anotadores de juegos: Truco, Podrido y más. Funciona offline y guarda todo en tu celular.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./assets/icons/favicon.png">
+<link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="El Anotador">
+
+<!-- Boot del tema: evita el "flash" del tema equivocado -->
+<script>
+(function(){try{
+  var raw=localStorage.getItem("anotador:theme:current");
+  var t=raw?JSON.parse(raw).d:"onix";
+  if(t!=="onix"&&t!=="marfil")t="onix";
+  document.documentElement.setAttribute("data-theme",t);
+}catch(e){}})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/css/tokens.css">
+<link rel="stylesheet" href="./assets/css/base.css">
+<link rel="stylesheet" href="./assets/css/shell.css">
+<style>
+  body{display:flex;flex-direction:column;overflow-x:hidden}
+  .home{flex:1;max-width:560px;width:100%;margin:0 auto;padding:calc(64px + var(--safe-top)) 20px 40px;display:flex;flex-direction:column}
+  .home-head{text-align:center;margin-bottom:32px}
+  .home-head h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(34px,10vw,46px);margin:0;color:var(--ink)}
+  .home-head .rule{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px auto 0;max-width:250px}
+  .home-head .rule::before,.home-head .rule::after{content:"";height:1px;flex:1;background:var(--hair)}
+  .home-head .rule span{font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--ink-soft)}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:440px){.grid{grid-template-columns:1fr 1fr}}
+  .app-card{
+    all:unset;box-sizing:border-box;cursor:pointer;
+    border:1px solid var(--hair);border-radius:var(--r-lg);
+    padding:22px 20px;display:flex;flex-direction:column;gap:14px;
+    background:var(--panel);transition:transform .12s, border-color .15s, background .15s;
+    position:relative;overflow:hidden;
+  }
+  .app-card:hover{border-color:var(--ink-soft)}
+  .app-card:active{transform:scale(.98)}
+  .app-card .glyph{
+    font-family:var(--serif);font-size:34px;line-height:1;color:var(--ink);
+    width:56px;height:56px;border:1px solid var(--hair);border-radius:16px;
+    display:grid;place-items:center;
+  }
+  .app-card .nm{font-family:var(--serif);font-size:22px;font-weight:500;color:var(--ink)}
+  .app-card .ds{font-size:12.5px;color:var(--ink-soft);letter-spacing:.02em;line-height:1.5}
+  .app-card .arr{position:absolute;top:20px;right:20px;color:var(--ink-soft);font-size:18px;transition:.15s}
+  .app-card:hover .arr{color:var(--ink);transform:translateX(2px)}
+
+  .home-foot{margin-top:28px;text-align:center;font-size:11px;letter-spacing:.06em;color:var(--ink-soft);line-height:1.7}
+  .home-foot .dot{opacity:.5;margin:0 6px}
+  .btn-install-home{
+    all:unset;display:none;text-align:center;cursor:pointer;margin:22px auto 0;
+    padding:13px 26px;border-radius:var(--r-pill);border:1px solid var(--ink);
+    background:var(--ink);color:var(--paper);font-size:12px;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:500;
+  }
+  .btn-install-home[data-show="1"]{display:inline-block}
+</style>
+</head>
+<body>
+
+<main class="home">
+  <div class="home-head">
+    <h1>El Anotador</h1>
+    <div class="rule"><span>Tus apps</span></div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <button class="btn-install-home" id="btn-install">⤓ Instalar en el celu</button>
+
+  <div class="home-foot">
+    Funciona sin internet <span class="dot">·</span> tus datos quedan en el celular
+    <br>Tocá <b>≡</b> arriba para cambiar de app o de tema
+  </div>
+</main>
+
+<script src="./assets/js/store.js"></script>
+<script src="./assets/js/registry.js"></script>
+<script src="./assets/js/theme.js"></script>
+<script src="./assets/js/pwa.js"></script>
+<script src="./assets/js/shell.js"></script>
+<script>
+(function(){
+  "use strict";
+  Theme.init();
+  var grid = document.getElementById("grid");
+  Registry.apps.forEach(function(a){
+    var card = document.createElement("button");
+    card.className = "app-card";
+    card.innerHTML =
+      '<span class="arr">›</span>' +
+      '<span class="glyph">'+a.glyph+'</span>' +
+      '<span class="nm">'+a.name+'</span>' +
+      '<span class="ds">'+a.tagline+'</span>';
+    card.addEventListener("click", function(){ location.href = a.href; });
+    grid.appendChild(card);
+  });
+  Shell.mount();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+/* ============================================================
+   El Anotador · Design tokens
+   Identidad monocromática compartida por todo el ecosistema.
+   El tema se setea con  <html data-theme="onix|marfil">.
+   ============================================================ */
+
+:root[data-theme="marfil"]{
+  --paper:#F5F3ED; --ink:#17160F; --ink-soft:#6b675c;
+  --hair:rgba(23,22,15,.14); --ghost:rgba(23,22,15,.10);
+  --panel:rgba(23,22,15,.025); --sheen:rgba(23,22,15,.02);
+  --scrim:rgba(23,22,15,.35);
+}
+:root[data-theme="onix"]{
+  --paper:#0F0F11; --ink:#ECEAE3; --ink-soft:#8f8d84;
+  --hair:rgba(236,234,227,.16); --ghost:rgba(236,234,227,.09);
+  --panel:rgba(236,234,227,.035); --sheen:rgba(236,234,227,.02);
+  --scrim:rgba(0,0,0,.55);
+}
+/* Fallback si por lo que sea no hay data-theme: ónix. */
+:root{
+  --paper:#0F0F11; --ink:#ECEAE3; --ink-soft:#8f8d84;
+  --hair:rgba(236,234,227,.16); --ghost:rgba(236,234,227,.09);
+  --panel:rgba(236,234,227,.035); --sheen:rgba(236,234,227,.02);
+  --scrim:rgba(0,0,0,.55);
+
+  /* Tipografía */
+  --serif:"Playfair Display", Georgia, serif;
+  --sans:"Jost", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+
+  /* Ritmo */
+  --r-sm:11px; --r-md:14px; --r-lg:20px; --r-pill:999px;
+  --safe-top:env(safe-area-inset-top,0px);
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+}
