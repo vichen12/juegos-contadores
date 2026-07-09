@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0F1115">
+<meta name="theme-color" content="#15171C">
 <title>Truco Vichen</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="../../assets/icons/favicon.png">
@@ -14,16 +14,13 @@
 <meta name="apple-mobile-web-app-title" content="Truco Vichen">
 <meta name="description" content="Anotador de Truco de Vichen: fósforos, malas y buenas, partido a 12–30. Offline.">
 <script>(function(){try{var r=localStorage.getItem("vichen:theme:current");var t=r?JSON.parse(r).d:"noche";if(t!=="noche"&&t!=="dia")t="noche";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/tokens.css">
 <link rel="stylesheet" href="../../assets/css/base.css">
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/shell.css">
 <style>
 :root{ --fsize:min(46px,11vw); --gap:9px; }
-body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden;-webkit-user-select:none;user-select:none}
+body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-user-select:none;user-select:none}
 
 /* Cabecera */
 .appbar{position:relative;padding:calc(11px + var(--safe-top)) 16px 2px;text-align:center}
@@ -40,8 +37,8 @@ body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden;-web
 main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:660px;width:100%;margin:6px auto 0;padding:0 10px}
 .team{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-3);box-shadow:var(--shadow-1);
   padding:12px 9px;display:flex;flex-direction:column;position:relative;overflow:hidden}
-.team.lead{border-color:color-mix(in srgb,var(--accent) 45%,var(--hair))}
-.team.lead::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
+.team.lead{border-color:var(--hair-2)}
+.team.lead::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--ink)}
 .tname{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
   padding:5px;border-radius:var(--r-1);color:var(--ink-soft);transition:color var(--dur-1),background var(--dur-1)}
 .tname:hover{color:var(--ink);background:var(--surface-2)}
@@ -67,10 +64,10 @@ main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:660px;w
 .slabel{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:5px;text-align:center}
 .cuadros{display:flex;flex-wrap:wrap;gap:var(--gap);justify-content:center;width:calc(2 * var(--fsize) + var(--gap));margin:0 auto}
 .cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto;border-radius:6px;transition:background var(--dur-2)}
-.cuad.full{background:var(--accent-tint)}
+.cuad.full{background:var(--surface-3)}
 .cuad line{stroke:var(--hair-2);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
-.cuad .lit line{stroke:var(--ink);stroke-width:2.8}
-.cuad .lit.diag line{stroke:var(--accent-strong);stroke-width:4.5;filter:drop-shadow(0 0 2px var(--accent))}
+.cuad .lit line{stroke:var(--ink);stroke-width:2.9}
+.cuad .lit.diag line{stroke:var(--ink);stroke-width:3.3}
 .cuad .draw line{animation:strike .34s var(--ease) forwards}
 @keyframes strike{from{stroke-dashoffset:1;opacity:.15}to{stroke-dashoffset:0;opacity:1}}
 

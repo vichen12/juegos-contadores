@@ -1,73 +1,84 @@
 /* ============================================================
-   Vichen · Design tokens
-   Escena: amigos de noche alrededor de la mesa, pasándose el celu
-   para anotar. Oscuro y cálido por defecto (Noche), con un acento
-   ámbar. Tema claro (Día) disponible. Se setea en <html data-theme>.
+   Vichen · Design tokens (formal)
+   Tipografías del sistema (cargan siempre, al instante — nada de
+   Google Fonts que pueden no bajar en el celular). CSS 100%
+   compatible (sin oklch, sin color-mix). Tema en <html data-theme>.
    ============================================================ */
 
 :root{
-  /* Tipografía */
-  --serif:"Fraunces", Georgia, "Times New Roman", serif;
-  --sans:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  /* Tipografía del sistema */
+  --serif: Georgia, "Times New Roman", "Nimbus Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 
   /* Radios */
-  --r-1:9px; --r-2:13px; --r-3:17px; --r-4:22px; --r-pill:999px;
+  --r-1:8px; --r-2:12px; --r-3:16px; --r-4:20px; --r-pill:999px;
 
   /* Motion */
-  --ease:cubic-bezier(.22,1,.36,1);       /* ease-out-quint */
+  --ease:cubic-bezier(.22,1,.36,1);
   --ease-soft:cubic-bezier(.4,0,.2,1);
-  --dur-1:140ms; --dur-2:220ms; --dur-3:340ms;
+  --dur-1:130ms; --dur-2:210ms; --dur-3:320ms;
 
-  /* Áreas seguras (notch) */
+  /* Áreas seguras */
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
-
-  /* Acento ámbar (igual en ambos temas para las superficies llenas) */
-  --accent:#E7B24C;
-  --accent-strong:#F3C266;
-  --accent-ink:#1B1607;                    /* texto sobre ámbar */
-  --accent-tint:rgba(231,178,76,.15);
-  --accent-ring:rgba(231,178,76,.55);
 }
 
-/* ===================== NOCHE (default) ===================== */
+/* ===================== NOCHE (default, oscuro) ===================== */
 :root, :root[data-theme="noche"]{
   color-scheme:dark;
-  --bg:#0F1115;
-  --surface:#161920;
-  --surface-2:#1E222B;
-  --surface-3:#262B35;
-  --hair:rgba(255,255,255,.09);
-  --hair-2:rgba(255,255,255,.16);
-  --ink:#F2F1EC;
-  --ink-soft:#A6AAB4;
+  --bg:#15171C;
+  --surface:#1D2027;
+  --surface-2:#252932;
+  --surface-3:#2F343E;
+  --hair:rgba(255,255,255,.10);
+  --hair-2:rgba(255,255,255,.19);
+  --ink:#ECEEF1;
+  --ink-soft:#A3A8B2;
   --ink-faint:#6B7280;
-  --neg:#E0906E;                           /* números negativos */
-  --accent-text:#F0C475;                   /* ámbar como texto (legible en oscuro) */
-  --scrim:rgba(6,7,10,.62);
-  --shadow-1:0 1px 2px rgba(0,0,0,.4);
-  --shadow-2:0 10px 30px -14px rgba(0,0,0,.7), 0 2px 6px rgba(0,0,0,.3);
-  --shadow-pop:0 20px 50px -18px rgba(0,0,0,.8);
-  --sheen:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,0));
+
+  /* Botón primario NEUTRAL (claro sobre oscuro) — nada de amarillo */
+  --btn:#ECEEF2; --btn-ink:#181B21; --btn-hover:#FFFFFF;
+
+  /* Acento verde sobrio (paño de mesa), usado con moderación */
+  --accent:#3E9E7C;
+  --accent-strong:#4FB18E;
+  --accent-ink:#0A140F;
+  --accent-tint:rgba(62,158,124,.16);
+  --accent-text:#6FC1A2;
+
+  --neg:#D98A6E;
+  --scrim:rgba(8,10,14,.62);
+  --shadow-1:0 1px 2px rgba(0,0,0,.35);
+  --shadow-2:0 10px 28px -14px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.28);
+  --shadow-pop:0 18px 44px -16px rgba(0,0,0,.72);
+  --sheen:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0));
 }
 
-/* ====================== DÍA ====================== */
+/* ====================== DÍA (claro) ====================== */
 :root[data-theme="dia"]{
   color-scheme:light;
-  --bg:#F1F1EF;
+  --bg:#F2F3F5;
   --surface:#FFFFFF;
-  --surface-2:#FAFAF8;
-  --surface-3:#F3F3F0;
-  --hair:rgba(24,26,32,.12);
-  --hair-2:rgba(24,26,32,.22);
-  --ink:#191B21;
-  --ink-soft:#585E6A;
-  --ink-faint:#8A909B;
+  --surface-2:#F6F7F9;
+  --surface-3:#EBEDF1;
+  --hair:rgba(20,24,31,.13);
+  --hair-2:rgba(20,24,31,.22);
+  --ink:#181B21;
+  --ink-soft:#565C66;
+  --ink-faint:#868C96;
+
+  --btn:#1C2027; --btn-ink:#FFFFFF; --btn-hover:#2B313B;
+
+  --accent:#1F7A5A;
+  --accent-strong:#1A6A4E;
+  --accent-ink:#FFFFFF;
+  --accent-tint:rgba(31,122,90,.12);
+  --accent-text:#1F7A5A;
+
   --neg:#B4623C;
-  --accent-text:#9A6B12;                    /* ámbar oscurecido para texto en claro */
-  --scrim:rgba(24,26,32,.4);
-  --shadow-1:0 1px 2px rgba(24,26,32,.06);
-  --shadow-2:0 12px 28px -16px rgba(24,26,32,.28), 0 1px 3px rgba(24,26,32,.08);
-  --shadow-pop:0 24px 50px -20px rgba(24,26,32,.35);
-  --sheen:linear-gradient(180deg, rgba(255,255,255,.6), rgba(255,255,255,0));
+  --scrim:rgba(20,24,31,.42);
+  --shadow-1:0 1px 2px rgba(20,24,31,.06);
+  --shadow-2:0 12px 26px -16px rgba(20,24,31,.22), 0 1px 3px rgba(20,24,31,.08);
+  --shadow-pop:0 22px 46px -20px rgba(20,24,31,.28);
+  --sheen:linear-gradient(180deg, rgba(255,255,255,.5), rgba(255,255,255,0));
 }

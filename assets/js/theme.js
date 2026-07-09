@@ -11,7 +11,7 @@
   const KEY = "current";
   const db = Store.namespace("theme", 1);
   const VALID = ["noche", "dia"];
-  const META_BG = { noche: "#0F1115", dia: "#F1F1EF" };
+  const META_BG = { noche: "#15171C", dia: "#F2F3F5" };
 
   function get() {
     const t = db.get(KEY, "noche");

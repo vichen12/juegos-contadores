@@ -27,8 +27,8 @@
 .btn--lg{--h:58px;font-size:16px;border-radius:var(--r-3)}
 .btn--sm{--h:40px;padding:0 14px;font-size:13px}
 
-.btn--primary{background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow-1)}
-.btn--primary:hover{background:var(--accent-strong)}
+.btn--primary{background:var(--btn);color:var(--btn-ink);box-shadow:var(--shadow-1)}
+.btn--primary:hover{background:var(--btn-hover)}
 .btn--primary:active{box-shadow:none}
 
 .btn--soft{background:var(--surface-2);color:var(--ink);border:1px solid var(--hair)}
