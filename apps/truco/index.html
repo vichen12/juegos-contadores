@@ -63,9 +63,9 @@ main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:660px;
 .slabel{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:8px;text-align:center}
 .cuadros{display:flex;flex-wrap:wrap;gap:var(--gap);justify-content:center;width:calc(2 * var(--fsize) + var(--gap));margin:0 auto}
 .cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto}
-.cuad line{stroke:var(--hair-2);stroke-width:2.2;stroke-linecap:round;pathLength:1;stroke-dasharray:1;stroke-dashoffset:0}
-.cuad .lit line{stroke:var(--ink)}
-.cuad .lit.diag line{stroke:var(--accent)}
+.cuad line{stroke:var(--hair-2);stroke-width:2.4;stroke-linecap:round;pathLength:1;stroke-dasharray:1;stroke-dashoffset:0}
+.cuad .lit line{stroke:var(--ink);stroke-width:2.8}
+.cuad .lit.diag line{stroke:var(--accent-strong);stroke-width:4;filter:drop-shadow(0 0 3px var(--accent-tint))}
 .cuad .draw line{animation:strike .34s var(--ease) forwards}
 @keyframes strike{from{stroke-dashoffset:1;opacity:.15}to{stroke-dashoffset:0;opacity:1}}
 

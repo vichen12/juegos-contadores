@@ -7,7 +7,7 @@
      · Fuentes de Google: cache-first (una vez bajadas, offline).
    Al cambiar archivos, subí VERSION para forzar actualización.
    ============================================================ */
-const VERSION = "vichen-v2.0.0";
+const VERSION = "vichen-v3.0.0";
 const CORE = VERSION + "-core";
 const RUNTIME = VERSION + "-rt";
 
@@ -26,6 +26,8 @@ const PRECACHE = [
   "./assets/js/theme.js",
   "./assets/js/shell.js",
   "./assets/js/pwa.js",
+  "./assets/img/logo-trans.png",
+  "./assets/img/logo-emblem-trans.png",
   "./assets/icons/favicon.png",
   "./assets/icons/apple-touch-icon.png",
   "./assets/icons/vichen-192.png",
@@ -78,6 +80,12 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
+
+  // Compat: la app "podrido" se renombró a "magic". Evita 404 de links viejos.
+  if (url.origin === self.location.origin && url.pathname.indexOf("/apps/podrido") !== -1) {
+    event.respondWith(Response.redirect(new URL("./apps/magic/", self.registration.scope).href, 302));
+    return;
+  }
 
   // Fuentes de Google: cache-first (persisten offline).
   if (isFont(url)) {

@@ -1,5 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/apps/podrido", "destination": "/apps/magic/", "permanent": true },
+    { "source": "/apps/podrido/:rest*", "destination": "/apps/magic/", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/sw.js",

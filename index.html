@@ -26,12 +26,10 @@
   .home{flex:1;width:100%;max-width:600px;margin:0 auto;padding:calc(70px + var(--safe-top)) 20px calc(36px + var(--safe-bottom));
     display:flex;flex-direction:column}
 
-  .hero{text-align:center;margin-bottom:34px}
-  .hero .logo{width:76px;height:76px;margin:0 auto 18px;border-radius:var(--r-3);display:grid;place-items:center;
-    background:var(--accent);color:var(--accent-ink);box-shadow:var(--shadow-2)}
-  .hero .logo svg{width:40px;height:40px}
-  .hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(40px,12vw,58px);letter-spacing:-.02em;line-height:1;color:var(--ink)}
-  .hero .tag{margin:12px auto 0;max-width:34ch;color:var(--ink-soft);font-size:14.5px;line-height:1.55;text-wrap:balance}
+  .hero{text-align:center;margin-bottom:36px}
+  .hero .logo-img{width:min(300px,76vw);height:auto;margin:0 auto;display:block;filter:invert(1)}
+  :root[data-theme="dia"] .hero .logo-img{filter:none}
+  .hero .tag{margin:16px auto 0;max-width:34ch;color:var(--ink-soft);font-size:14.5px;line-height:1.55;text-wrap:balance}
 
   .apps{display:grid;grid-template-columns:1fr;gap:13px}
   @media(min-width:460px){.apps{grid-template-columns:1fr 1fr}}
@@ -69,8 +67,7 @@
 
 <main class="home">
   <header class="hero">
-    <div class="logo" id="hero-logo"></div>
-    <h1>Vichen</h1>
+    <img class="logo-img" src="./assets/img/logo-trans.png" alt="Contadores de Juego" width="300" height="175">
     <p class="tag">Anotá tus partidas con amigos.<br>Funciona sin internet y todo queda en tu celular.</p>
   </header>
 
@@ -91,8 +88,7 @@
 (function(){
   "use strict";
   Theme.init();
-  document.getElementById("hero-logo").innerHTML = Icons.svg("sparkles",{size:40});
-  document.getElementById("btn-install").innerHTML = Icons.svg("install",{size:19}) + "Instalar Vichen";
+  document.getElementById("btn-install").innerHTML = Icons.svg("install",{size:19}) + "Instalar app";
 
   var box = document.getElementById("apps");
   Registry.apps.forEach(function(a){

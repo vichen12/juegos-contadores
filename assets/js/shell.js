@@ -33,9 +33,9 @@
     drawer.setAttribute("aria-modal", "true");
     drawer.setAttribute("aria-label", "Menú de apps");
 
-    // Marca
+    // Marca (logo real)
     const brand = el("div", "shell-brand",
-      '<span class="logo">' + ic("sparkles", 23) + '</span>' +
+      '<img class="logo" src="' + base + 'assets/img/logo-emblem-trans.png" alt="Contadores de Juego">' +
       '<span class="txt"><span class="name">Vichen</span>' +
       '<span class="sub">Anotador de juegos</span></span>');
 
