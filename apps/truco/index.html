@@ -66,17 +66,20 @@ main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:660px;w
 .team.no-fos .fos{display:none}
 .slabel{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:5px;text-align:center}
 .cuadros{display:flex;flex-wrap:wrap;gap:var(--gap);justify-content:center;width:calc(2 * var(--fsize) + var(--gap));margin:0 auto}
-.cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto}
+.cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto;border-radius:6px;transition:background var(--dur-2)}
+.cuad.full{background:var(--accent-tint)}
 .cuad line{stroke:var(--hair-2);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
 .cuad .lit line{stroke:var(--ink);stroke-width:2.8}
-.cuad .lit.diag line{stroke:var(--accent-strong);stroke-width:4;filter:drop-shadow(0 0 3px var(--accent-tint))}
+.cuad .lit.diag line{stroke:var(--accent-strong);stroke-width:4.5;filter:drop-shadow(0 0 2px var(--accent))}
 .cuad .draw line{animation:strike .34s var(--ease) forwards}
 @keyframes strike{from{stroke-dashoffset:1;opacity:.15}to{stroke-dashoffset:0;opacity:1}}
 
-.mainpad{display:flex;gap:8px;margin-top:2px}
+.mainpad{display:flex;gap:9px;margin-top:4px}
 .mainpad .plus{flex:1}
-.mainpad .btn{--h:48px}
-.mainpad .iconbtn{--s:48px}
+.mainpad .btn{--h:58px;font-size:17px;font-weight:700}
+.mainpad .btn svg{width:23px;height:23px}
+.mainpad .iconbtn{--s:58px}
+.mainpad .iconbtn svg{width:25px;height:25px}
 
 /* Historial */
 .log-wrap{max-width:660px;width:100%;margin:2px auto 0;padding:14px 16px calc(18px + var(--safe-bottom))}
@@ -288,8 +291,9 @@ function renderTeam(t,silent){
   t.querySelector("[data-nm]").textContent=S.names[i];
   let g=0,html="";
   for(const [label,count] of sections()){ let cells="";const upto=g+count;
-    while(g<upto){ let lines=""; for(let l=0;l<5&&g<upto;l++){const idx=g++;lines+=matchG(l,idx<pts,idx>=prev&&idx<pts);}
-      cells+=`<svg class="cuad" viewBox="0 0 44 44" aria-hidden="true">${lines}</svg>`; }
+    while(g<upto){ let lines=""; const boxStart=g; for(let l=0;l<5&&g<upto;l++){const idx=g++;lines+=matchG(l,idx<pts,idx>=prev&&idx<pts);}
+      const full=(g-boxStart===5)&&(g<=pts);
+      cells+=`<svg class="cuad${full?" full":""}" viewBox="0 0 44 44" aria-hidden="true">${lines}</svg>`; }
     html+=`<div><span class="slabel">${label}</span><div class="cuadros">${cells}</div></div>`; }
   t.querySelector("[data-fos]").innerHTML=html;
   t.querySelector("[data-score]").textContent=pts;

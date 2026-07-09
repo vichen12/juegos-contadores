@@ -7,7 +7,7 @@
      · Fuentes de Google: cache-first (una vez bajadas, offline).
    Al cambiar archivos, subí VERSION para forzar actualización.
    ============================================================ */
-const VERSION = "vichen-v3.1.0";
+const VERSION = "vichen-v3.2.0";
 const CORE = VERSION + "-core";
 const RUNTIME = VERSION + "-rt";
 
