@@ -22,24 +22,24 @@
 <link rel="stylesheet" href="../../assets/css/components.css">
 <link rel="stylesheet" href="../../assets/css/shell.css">
 <style>
-:root{ --fsize:min(62px,13.5vw); --gap:13px; }
+:root{ --fsize:min(46px,11vw); --gap:9px; }
 body{display:flex;flex-direction:column;min-height:100dvh;overflow-x:hidden;-webkit-user-select:none;user-select:none}
 
 /* Cabecera */
-.appbar{position:relative;padding:calc(15px + var(--safe-top)) 16px 4px;text-align:center}
+.appbar{position:relative;padding:calc(11px + var(--safe-top)) 16px 2px;text-align:center}
 .appbar .kicker{font-weight:800;letter-spacing:.2em;text-transform:uppercase;font-size:10px;color:var(--ink-faint)}
 .appbar .kicker b{color:var(--accent-text)}
-.appbar h1{font-family:var(--serif);font-weight:600;font-size:clamp(26px,7vw,34px);letter-spacing:-.01em;margin-top:2px}
-.appbar .set{position:absolute;top:calc(12px + var(--safe-top));right:14px}
+.appbar h1{font-family:var(--serif);font-weight:600;font-size:clamp(22px,6vw,32px);letter-spacing:-.01em;margin-top:1px}
+.appbar .set{position:absolute;top:calc(9px + var(--safe-top));right:14px}
 
-.status{text-align:center;padding:8px 16px 2px;font-size:12.5px;color:var(--ink-soft)}
+.status{text-align:center;padding:5px 16px 2px;font-size:12.5px;color:var(--ink-soft)}
 .status b{color:var(--ink);font-weight:600}
 .status .amber{color:var(--accent-text);font-weight:600}
 
 /* Tablero */
-main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:660px;width:100%;margin:8px auto 0;padding:0 12px}
+main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;max-width:660px;width:100%;margin:6px auto 0;padding:0 10px}
 .team{background:var(--surface);border:1px solid var(--hair);border-radius:var(--r-3);box-shadow:var(--shadow-1);
-  padding:15px 12px 14px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  padding:12px 9px;display:flex;flex-direction:column;position:relative;overflow:hidden}
 .team.lead{border-color:color-mix(in srgb,var(--accent) 45%,var(--hair))}
 .team.lead::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent)}
 .tname{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;
@@ -52,15 +52,19 @@ main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:660px;
 .tname:hover .ed{opacity:1}
 .tname .ed svg{width:13px;height:13px}
 
-.score{font-family:var(--serif);font-weight:600;font-size:clamp(60px,18vw,98px);line-height:.92;text-align:center;
-  color:var(--ink);cursor:pointer;margin:6px 0 0;font-variant-numeric:lining-nums}
+.score{font-family:var(--serif);font-weight:600;font-size:clamp(52px,16vw,90px);line-height:.9;text-align:center;
+  color:var(--ink);cursor:pointer;margin:2px 0 0;font-variant-numeric:lining-nums}
 .score:active{transform:scale(.97)}
-.badge{text-align:center;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:6px;min-height:13px}
+.tstat{display:flex;flex-direction:column;align-items:center;gap:0;margin:3px 0 8px;min-height:15px}
+.badge{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);line-height:1.3}
 .badge.buenas{color:var(--accent-text)}
-.left{text-align:center;font-size:11.5px;color:var(--ink-soft);margin:3px 0 10px;min-height:14px}
+.badge:empty{display:none}
+.left{font-size:11px;color:var(--ink-soft);line-height:1.3}
+.left:empty{display:none}
 
-.fos{display:flex;flex-direction:column;gap:14px;flex:1;justify-content:center;padding:2px 0 10px}
-.slabel{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:8px;text-align:center}
+.fos{display:flex;flex-direction:column;gap:7px;padding:8px 0 0}
+.team.no-fos .fos{display:none}
+.slabel{font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);display:block;margin-bottom:5px;text-align:center}
 .cuadros{display:flex;flex-wrap:wrap;gap:var(--gap);justify-content:center;width:calc(2 * var(--fsize) + var(--gap));margin:0 auto}
 .cuad{width:var(--fsize);height:var(--fsize);flex:0 0 auto}
 .cuad line{stroke:var(--hair-2);stroke-width:2.4;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:0}
@@ -69,8 +73,10 @@ main{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:11px;max-width:660px;
 .cuad .draw line{animation:strike .34s var(--ease) forwards}
 @keyframes strike{from{stroke-dashoffset:1;opacity:.15}to{stroke-dashoffset:0;opacity:1}}
 
-.mainpad{display:flex;gap:9px;margin-top:2px}
+.mainpad{display:flex;gap:8px;margin-top:2px}
 .mainpad .plus{flex:1}
+.mainpad .btn{--h:48px}
+.mainpad .iconbtn{--s:48px}
 
 /* Historial */
 .log-wrap{max-width:660px;width:100%;margin:2px auto 0;padding:14px 16px calc(18px + var(--safe-bottom))}
@@ -173,6 +179,7 @@ canvas#confetti{position:fixed;inset:0;z-index:95;pointer-events:none}
       <span class="eyebrow">Preferencias</span>
       <div class="switch-row"><span class="lbl"><span class="pref-ic" data-ic="zap"></span>Sonidos</span><button class="toggle" id="sw-sound" role="switch"></button></div>
       <div class="switch-row"><span class="lbl"><span class="pref-ic" data-ic="flame"></span>Vibración</span><button class="toggle" id="sw-vibe" role="switch"></button></div>
+      <div class="switch-row"><span class="lbl"><span class="pref-ic" data-ic="spade"></span>Mostrar fósforos</span><button class="toggle" id="sw-fosforos" role="switch"></button></div>
       <div class="switch-row"><span class="lbl"><span class="pref-ic" data-ic="layers"></span>Mostrar malas / buenas</span><button class="toggle" id="sw-badge" role="switch"></button></div>
       <div class="switch-row"><span class="lbl"><span class="pref-ic" data-ic="sparkles"></span>Confeti al ganar</span><button class="toggle" id="sw-conf" role="switch"></button></div>
     </div>
@@ -210,8 +217,8 @@ const $ = s => document.querySelector(s);
 const SVG = (n,s)=>Icons.svg(n,{size:s||20});
 
 const ICONS_PICK = ["spade","club","heart","diamond","star","crown","flame","zap","swords","dice"];
-const SIZES = { chico:"min(52px,11.5vw)", medio:"min(57px,12.6vw)", grande:"min(62px,13.8vw)" };
-const DEFAULTS = { limit:30, size:"grande", sound:true, vibe:true, badge:true, conf:true,
+const SIZES = { chico:"min(36px,9vw)", medio:"min(42px,10.5vw)", grande:"min(48px,12vw)" };
+const DEFAULTS = { limit:30, size:"medio", sound:true, vibe:true, badge:true, conf:true, fosforos:true,
   names:["Nosotros","Ellos"], icons:["spade","heart"] };
 
 const S = Object.assign({}, DEFAULTS, { pts:[0,0], prev:[0,0], hist:[], over:false, logOpen:false });
@@ -219,7 +226,7 @@ const S = Object.assign({}, DEFAULTS, { pts:[0,0], prev:[0,0], hist:[], over:fal
 /* -------- persistencia -------- */
 function loadState(){
   const cfg = db.get("settings", null);
-  if(cfg){ ["limit","size","sound","vibe","badge","conf"].forEach(k=>{ if(cfg[k]!=null) S[k]=cfg[k]; });
+  if(cfg){ ["limit","size","sound","vibe","badge","conf","fosforos"].forEach(k=>{ if(cfg[k]!=null) S[k]=cfg[k]; });
     if(Array.isArray(cfg.names)) S.names=cfg.names.slice(0,2);
     if(Array.isArray(cfg.icons)) S.icons=cfg.icons.slice(0,2); }
   const g = db.get("game", null);
@@ -227,7 +234,7 @@ function loadState(){
 }
 let saveT=null;
 function save(){ if(saveT)return; saveT=setTimeout(()=>{ saveT=null;
-  db.set("settings",{limit:S.limit,size:S.size,sound:S.sound,vibe:S.vibe,badge:S.badge,conf:S.conf,names:S.names,icons:S.icons});
+  db.set("settings",{limit:S.limit,size:S.size,sound:S.sound,vibe:S.vibe,badge:S.badge,conf:S.conf,fosforos:S.fosforos,names:S.names,icons:S.icons});
   db.set("game",{pts:S.pts,hist:S.hist,over:S.over}); },0); }
 
 /* -------- sonido / vibración -------- */
@@ -259,13 +266,12 @@ function teamHTML(i){ return `
       <span class="mk" data-mk></span><span class="nm" data-nm></span><span class="ed">${SVG("pencil",13)}</span>
     </button>
     <div class="score tnum" data-score role="button" aria-label="Sumar 1">0</div>
-    <div class="badge" data-badge></div>
-    <div class="left" data-left></div>
-    <div class="fos" data-fos></div>
+    <div class="tstat"><span class="badge" data-badge></span><span class="left" data-left></span></div>
     <div class="mainpad">
       <button class="iconbtn" data-act="sub" aria-label="Restar 1">${SVG("minus",20)}</button>
       <button class="btn btn--primary plus" data-act="add">${SVG("plus",19)}Sumar</button>
     </div>
+    <div class="fos" data-fos></div>
   </section>`; }
 function buildBoard(){
   board.innerHTML=teamHTML(0)+teamHTML(1);
@@ -295,6 +301,7 @@ function renderTeam(t,silent){
   t.querySelector("[data-left]").textContent = rest===0?"" : rest===1?"A un punto" : `Faltan ${rest}`;
   t.querySelector('[data-act="sub"]').disabled=pts<=0||S.over;
   t.querySelector('[data-act="add"]').disabled=S.over||pts>=S.limit;
+  t.classList.toggle("no-fos", !S.fosforos);
   t.classList.toggle("lead", !S.over && S.pts[i]>S.pts[1-i] && S.pts[i]>0);
 }
 function renderAll(silent){
@@ -364,7 +371,7 @@ function openSettings(){ draft={icons:[...S.icons],theme:Theme.get(),size:S.size
   iconRow($("#ic-0"),S.icons[0],v=>draft.icons[0]=v);
   iconRow($("#ic-1"),S.icons[1],v=>draft.icons[1]=v);
   segSel("#limit-opts",S.limit); segSel("#size-opts",S.size); segSel("#theme-opts",Theme.get());
-  ["sound","vibe","badge","conf"].forEach(k=>setSw("#sw-"+k,S[k]));
+  ["sound","vibe","badge","conf","fosforos"].forEach(k=>setSw("#sw-"+k,S[k]));
   $("#m-settings").classList.add("show");document.body.style.overflow="hidden"; }
 function segSel(sel,val){ document.querySelectorAll(sel+" .seg-opt").forEach(o=>o.setAttribute("aria-selected",o.dataset.v==String(val))); }
 function segVal(sel){ const o=document.querySelector(sel+' .seg-opt[aria-selected="true"]'); return o?o.dataset.v:null; }
@@ -386,7 +393,7 @@ $("#btn-apply").addEventListener("click",()=>{
   S.icons=[...draft.icons];
   Theme.set(segVal("#theme-opts")||Theme.get());
   S.size=segVal("#size-opts")||S.size; document.body.style.setProperty("--fsize",SIZES[S.size]);
-  ["sound","vibe","badge","conf"].forEach(k=>S[k]=swVal("#sw-"+k));
+  ["sound","vibe","badge","conf","fosforos"].forEach(k=>S[k]=swVal("#sw-"+k));
   const nl=+segVal("#limit-opts");
   $("#m-settings").classList.remove("show");document.body.style.overflow="";
   if(nl!==S.limit){ S.limit=nl; if(S.pts[0]||S.pts[1]){resetGame();save();return;} }
